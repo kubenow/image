@@ -8,6 +8,10 @@ env:
   - HOST_CLOUD=aws
 
 before_install:
+  
+  #Creating tmp dir
+  - mkdir tmp
+
   #Decrypt secrets
   - >
     openssl aes-256-cbc
@@ -18,7 +22,7 @@ before_install:
     -d
   
   #Extract secrets
-  - tar xzvf tmp/secret.tgz -C tmp
+  - tar xzvf tmp/keys.tgz -C tmp
   
   #Add the keypair to the agent
   - eval "$(ssh-agent -s)"
