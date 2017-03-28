@@ -26,7 +26,7 @@
 	"provisioners": [
 		{
 			"type": "shell",
-			"script": "{{pwd}}/packer/requirements.sh"
+			"script": "{{pwd}}/requirements.sh"
 		}
 	]
 }
