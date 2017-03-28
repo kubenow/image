@@ -61,7 +61,7 @@ before_script:
   #Set necessary environmental variables
 
   # Variable common to all three platform
-  - export current_version=$(git describe --tags --always)
+  - export current_version=v$(git describe --tags --always | tr -d .)
 
   # Variable needed only for GCE
   - export playbook_dir=./
