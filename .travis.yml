@@ -27,6 +27,7 @@ before_install:
   
   #Extract secrets
   - tar xzvf keys.tgz
+
   
   #Add the keypair to the agent
   - eval "$(ssh-agent -s)"
