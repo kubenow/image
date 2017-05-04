@@ -1,33 +1,27 @@
 language: python
 
-notifications:
-  email: false
-
 sudo: required
 
-git:
-  depth: 10
-
 env:
-  - HOST_CLOUD=openstack
-  - HOST_CLOUD=gce
-  - HOST_CLOUD=aws
-
+  global:
+    - TERRAFORM_VERSION=0.9.4
+    - PACKER_VERSION=1.0.0
+  matrix:
+    - HOST_CLOUD=gce
+    - HOST_CLOUD=aws
 
 before_install:
-
   #Decrypt secrets
   - >
     openssl aes-256-cbc
     -K $encrypted_92e1e3eadcc5_key
     -iv $encrypted_92e1e3eadcc5_iv
-    -in keys.enc
+    -in .keys.enc
     -out keys.tgz
     -d
   
   #Extract secrets
   - tar xzvf keys.tgz
-
   
   #Add the keypair to the agent
   - eval "$(ssh-agent -s)"
@@ -37,37 +31,75 @@ before_install:
   - git clone git@github.com:mcapuccini/secrets-kubenow.git secrets-kubenow
 
 install:
-
   #INSTALL DEPS
 
   #Packer
   - >
-      curl
-      https://releases.hashicorp.com/packer/0.12.3/packer_0.12.3_linux_amd64.zip
-      > ./packer.zip
-  - sudo unzip ./packer.zip -d /usr/bin
-  - sudo chmod +x /usr/bin/packer
+      travis_retry curl
+      https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip
+      > /tmp/packer.zip
+  - unzip /tmp/packer.zip -d /tmp/
+
+  #Terraform
+  - >
+      travis_retry curl
+      https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+      > /tmp/terraform.zip
+  - unzip /tmp/terraform.zip -d /tmp/
   
   #Jinja2 and its line interface
-  - sudo pip install --upgrade pip
-  - sudo pip install Jinja2
-  - sudo pip install j2cli
+  - pip install --upgrade pip
+  - pip install Jinja2
+  - pip install j2cli
+  
+  #AWS command-line client
+  - pip install awscli
+  
+  #Google Cloud Engine SDK kit
+  #Create an environment variable for the correct distribution
+  - export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)"
+
+  #Add the Cloud SDK distribution URI as a package source
+  - >
+      echo "deb https://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" |
+      sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+  
+  #Import the Google Cloud Platform public key
+  - >
+      curl https://packages.cloud.google.com/apt/doc/apt-key.gpg |
+      sudo apt-key add -
+      
+  #Update the package list and install the Cloud SDK
+  - sudo apt-get update && sudo apt-get install google-cloud-sdk
   
 before_script:
+  #Get current_version, variable common to all three platforms
+  - source ./postprocessor/get_current_version.sh
+  
+  #Source Environment
+  - source secrets-kubenow/host_cloud/aws.sh
+  - source secrets-kubenow/host_cloud/gce.sh
 
-  #Source RC file
-  - source secrets-kubenow/host_cloud/CityCloud.sh
-
-  #Set necessary environmental variables
-
-  # Variable common to all three platform
-  - export current_version=v$(git describe --tags --always | tr -d .)
+  # Common
+  - mkdir -p ~/.ssh/ && cp keys/id_rsa.pub ~/.ssh/id_rsa.pub
 
   # Variable needed only for GCE
   - export playbook_dir=./
 
-  #Render Templates from tmp/secrets-kubenow/packer into tmp/packer
+ #GCE login
+  - >
+      gcloud auth activate-service-account
+      12202776487-compute@developer.gserviceaccount.com
+      --key-file=secrets-kubenow/host_cloud/gce-key.json
+  - >
+      gcloud auth login 12202776487-compute@developer.gserviceaccount.com
+      --project phenomenal-1145 -q
+      
+  - cp secrets-kubenow/host_cloud/gce-key.json ./postprocessor/account_file.json
+
+  #Render templates from tmp/secrets-kubenow/packer into tmp/packer
   - env | j2 --format=env secrets-kubenow/packer/"$HOST_CLOUD".json.j2 > secrets-kubenow/packer/"$HOST_CLOUD".json
 
 script:
-  - packer build -var-file=secrets-kubenow/packer/"$HOST_CLOUD".json build-"$HOST_CLOUD".json 
+  #Finally bulding the image with packer 
+- travis_retry /tmp/packer build -force -var-file=secrets-kubenow/packer/"$HOST_CLOUD".json build-"$HOST_CLOUD".json
