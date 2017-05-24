@@ -1,13 +1,16 @@
-![logo](img/logo_wide_50dpi.png)
+![logo](https://github.com/kubenow/KubeNow/blob/master/img/logo_wide_50dpi.png)
 
 Collection of templates for building KubeNow image
 
-[![Documentation Status](https://readthedocs.org/projects/kubenow/badge/?version=stable)](http://kubenow.readthedocs.io/en/stable/?badge=stable)
-[![Documentation Status](https://readthedocs.org/projects/kubenow/badge/?version=latest)](http://kubenow.readthedocs.io/en/latest/?badge=latest)
 [![Build Status](https://travis-ci.org/kubenow/KubeNow.svg?branch=master)](https://travis-ci.org/kubenow/KubeNow)
 
-## Image Build Instructions
+## Image Building
 
-KubeNow uses prebuilt images to speed up the deployment. Even if we provide some prebuilt images you may need to build it yourself.
-The image building process involves in particular the use of [Packer](https://www.packer.io) (0.12.3 or higher), so you will need to install it on your workstation.
-The procedure is slightly different for each host cloud. [Here](https://kubenow.readthedocs.io/en/latest/developers/build-img.html) you can find further details for each of the supported providers.
+KubeNow uses prebuilt images to speed up the deployment. Image continous integration is defined in this repository: https://github.com/kubenow/image.
+
+The images are exported on AWS and GCE:
+
+- https://storage.googleapis.com/kubenow-images/kubenow-<version-without-dots>.tar.gz
+- https://s3.amazonaws.com/kubenow-us-east-1/kubenow-<version-without-dots>.qcow2
+
+Please refer to this page to figure out the image version: https://github.com/kubenow/image/releases. It is important to point out that the image versioning is now disjoint from the main KubeNow repository versioning. The main reason lies in the fact that pre-built images require less revisions and updates compared to the main KubeNow package.
