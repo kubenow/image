@@ -38,7 +38,7 @@
       },
       {
          "type":"shell-local",
-         "script":"{{pwd}}/postprocessor/gce_pp.sh"
+         "script":"{{pwd}}/bin/gce_pp.sh"
       }
    ]
 }

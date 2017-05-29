@@ -9,8 +9,10 @@ regex='^v[0-9]{3}([ab][0-9]{1,}|rc[0-9]{1,})?$'
 #Checking whether or not current version is tagged as release
 if [[ $CURRENT_VERSION =~ $regex ]]; then
 	echo "Kubenow current version tagged as release"
+elif [ $TRAVIS_BRANCH == 'master' ]; then
+	export CURRENT_VERSION="${CURRENT_VERSION}-current"
 else
-	export CURRENT_VERSION="current"
+    export CURRENT_VERSION="${CURRENT_VERSION}-test"
 fi
 
-echo "Kubenow current version is: $CURRENT_VERSION"
+echo "KubeNow image version is: $CURRENT_VERSION"
