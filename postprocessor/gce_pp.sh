@@ -16,7 +16,7 @@ export TF_VAR_ssh_key="~/.ssh/id_rsa.pub"
 export TF_VAR_current_version=$CURRENT_VERSION
 
 #Launching GCE instance with terraform
-/tmp/terraform apply || TF_STATUS="$?"
+/tmp/terraform apply ; TF_STATUS="$?"
 
 #Destroying GCE instance with terraform
 /tmp/terraform destroy -force

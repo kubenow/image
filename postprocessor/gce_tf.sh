@@ -23,9 +23,3 @@ source /tmp/aws.sh
 
 echo "Uploading new image format into AWS S3 bucket: kubenow-us-east-1 ..."
 aws s3 cp kubenow-"$1".qcow2 s3://kubenow-us-east-1 --region us-east-1 --acl public-read --quiet
-
-#Printing & checking awscli return code
-echo "Return code aws s3 copy: $?"
-
-#Exiting based on above return code
-exit $?
