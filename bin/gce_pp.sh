@@ -6,7 +6,7 @@ echo "Setting new created Google image as shared publicly..."
 gsutil acl ch -u AllUsers:R gs://kubenow-images/kubenow-"$CURRENT_VERSION".tar.gz
 
 #Building the GCE Instances
-cd ./postprocessor
+cd ./bin
 
 #Environmental Variables for building with Terraform apply
 export TF_VAR_gce_credentials_file="account_file.json"
