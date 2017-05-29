@@ -74,7 +74,7 @@ install:
   
 before_script:
   #Get current_version, variable common to all three platforms
-  - source ./postprocessor/get_current_version.sh
+  - source ./bin/get_current_version.sh
   
   #Source Environment
   - source secrets-kubenow/host_cloud/aws.sh
@@ -95,7 +95,7 @@ before_script:
       gcloud auth login 12202776487-compute@developer.gserviceaccount.com
       --project phenomenal-1145 -q
       
-  - cp secrets-kubenow/host_cloud/gce-key.json ./postprocessor/account_file.json
+  - cp secrets-kubenow/host_cloud/gce-key.json ./bin/account_file.json
 
   #Render templates from tmp/secrets-kubenow/packer into tmp/packer
   - env | j2 --format=env secrets-kubenow/packer/"$HOST_CLOUD".json.j2 > secrets-kubenow/packer/"$HOST_CLOUD".json
