@@ -1,4 +1,6 @@
 #!/bin/bash
+# shellcheck disable=SC1091
+
 #This Script will be executed as post-processor of the GCE packer builder within a GCE VM instances, not in Travis.
 #Travis environment has not enough resources for the below steps, hence it takes a longer time causing timeouts.
 
@@ -19,6 +21,7 @@ qemu-img convert -f raw -O qcow2 disk.raw kubenow-"$1".qcow2
 
 #Uploading the new image format to the AWS S3 bucket. Previous copy will be overwritten.
 echo "Sourcing AWS environment..."
+
 source /tmp/aws.sh
 
 echo "Uploading new image format into AWS S3 bucket: kubenow-us-east-1 ..."

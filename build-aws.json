@@ -1,122 +1,122 @@
 {
-   "variables":{
-      "image_name":"{{env `PACKER_IMAGE_NAME`}}",
-      "source_image_id":"{{env `PACKER_SOURCE_IMAGE_ID`}}",
-      "aws_access_key_id":"{{env `PACKER_AWS_ACCESS_KEY_ID`}}",
-      "aws_secret_access_key":"{{env `PACKER_AWS_SECRET_ACCESS_KEY`}}",
-      "region":"{{env `PACKER_REGION`}}",
-      "current_version":"{{env `CURRENT_VERSION`}}"
-   },
-   "builders":[
-      {
-         "name":"aws-ca-central-1",
-         "type":"amazon-ebs",
-         "access_key":"{{user `aws_access_key_id`}}",
-         "ami_name":"{{user `image_name`}}",
-         "ami_description":"{{user `image_name`}}",
-         "ami_groups":"all",
-         "instance_type":"t2.medium",
-         "region":"ca-central-1",
-         "secret_key":"{{user `aws_secret_access_key`}}",
-         "source_ami":"ami-b3d965d7",
-         "ssh_username":"ubuntu"
-      },
-      {
-         "name":"aws-eu-central-1",
-         "type":"amazon-ebs",
-         "access_key":"{{user `aws_access_key_id`}}",
-         "ami_name":"{{user `image_name`}}",
-         "ami_description":"{{user `image_name`}}",
-         "ami_groups":"all",
-         "instance_type":"t2.medium",
-         "region":"eu-central-1",
-         "secret_key":"{{user `aws_secret_access_key`}}",
-         "source_ami":"ami-060cde69",
-         "ssh_username":"ubuntu"
-      },
-      {
-         "name":"aws-eu-west-1",
-         "type":"amazon-ebs",
-         "access_key":"{{user `aws_access_key_id`}}",
-         "ami_name":"{{user `image_name`}}",
-         "ami_description":"{{user `image_name`}}",
-         "ami_groups":"all",
-         "instance_type":"t2.medium",
-         "region":"eu-west-1",
-         "secret_key":"{{user `aws_secret_access_key`}}",
-         "source_ami":"ami-ca80a0b9",
-         "ssh_username":"ubuntu"
-      },
-      {
-         "name":"aws-eu-west-2",
-         "type":"amazon-ebs",
-         "access_key":"{{user `aws_access_key_id`}}",
-         "ami_name":"{{user `image_name`}}",
-         "ami_description":"{{user `image_name`}}",
-         "ami_groups":"all",
-         "instance_type":"t2.medium",
-         "region":"eu-west-2",
-         "secret_key":"{{user `aws_secret_access_key`}}",
-         "source_ami":"ami-f1d7c395",
-         "ssh_username":"ubuntu"
-      },
-      {
-         "name":"aws-us-east-1",
-         "type":"amazon-ebs",
-         "access_key":"{{user `aws_access_key_id`}}",
-         "ami_name":"{{user `image_name`}}",
-         "ami_description":"{{user `image_name`}}",
-         "ami_groups":"all",
-         "instance_type":"m3.medium",
-         "region":"us-east-1",
-         "secret_key":"{{user `aws_secret_access_key`}}",
-         "source_ami":"ami-80861296",
-         "ssh_username":"ubuntu"
-      },
-      {
-         "name":"aws-us-east-2",
-         "type":"amazon-ebs",
-         "access_key":"{{user `aws_access_key_id`}}",
-         "ami_name":"{{user `image_name`}}",
-         "ami_description":"{{user `image_name`}}",
-         "ami_groups":"all",
-         "instance_type":"t2.medium",
-         "region":"us-east-2",
-         "secret_key":"{{user `aws_secret_access_key`}}",
-         "source_ami":"ami-618fab04",
-         "ssh_username":"ubuntu"
-      },
-      {
-         "name":"aws-us-west-1",
-         "type":"amazon-ebs",
-         "access_key":"{{user `aws_access_key_id`}}",
-         "ami_name":"{{user `image_name`}}",
-         "ami_description":"{{user `image_name`}}",
-         "ami_groups":"all",
-         "instance_type":"t2.medium",
-         "region":"us-west-1",
-         "secret_key":"{{user `aws_secret_access_key`}}",
-         "source_ami":"ami-2afbde4a",
-         "ssh_username":"ubuntu"
-      },
-      {
-         "name":"aws-us-west-2",
-         "type":"amazon-ebs",
-         "access_key":"{{user `aws_access_key_id`}}",
-         "ami_name":"{{user `image_name`}}",
-         "ami_description":"{{user `image_name`}}",
-         "ami_groups":"all",
-         "instance_type":"t2.medium",
-         "region":"us-west-2",
-         "secret_key":"{{user `aws_secret_access_key`}}",
-         "source_ami":"ami-efd0428f",
-         "ssh_username":"ubuntu"
-      }
-   ],
-   "provisioners":[
-      {
-         "type":"shell",
-         "script":"{{pwd}}/requirements.sh"
-      }
-   ]
+    "builders": [
+        {
+            "access_key": "{{user `aws_access_key_id`}}",
+            "ami_description": "{{user `image_name`}}",
+            "ami_groups": "all",
+            "ami_name": "{{user `image_name`}}",
+            "instance_type": "t2.medium",
+            "name": "aws-ca-central-1",
+            "region": "ca-central-1",
+            "secret_key": "{{user `aws_secret_access_key`}}",
+            "source_ami": "ami-b3d965d7",
+            "ssh_username": "ubuntu",
+            "type": "amazon-ebs"
+        },
+        {
+            "access_key": "{{user `aws_access_key_id`}}",
+            "ami_description": "{{user `image_name`}}",
+            "ami_groups": "all",
+            "ami_name": "{{user `image_name`}}",
+            "instance_type": "t2.medium",
+            "name": "aws-eu-central-1",
+            "region": "eu-central-1",
+            "secret_key": "{{user `aws_secret_access_key`}}",
+            "source_ami": "ami-060cde69",
+            "ssh_username": "ubuntu",
+            "type": "amazon-ebs"
+        },
+        {
+            "access_key": "{{user `aws_access_key_id`}}",
+            "ami_description": "{{user `image_name`}}",
+            "ami_groups": "all",
+            "ami_name": "{{user `image_name`}}",
+            "instance_type": "t2.medium",
+            "name": "aws-eu-west-1",
+            "region": "eu-west-1",
+            "secret_key": "{{user `aws_secret_access_key`}}",
+            "source_ami": "ami-ca80a0b9",
+            "ssh_username": "ubuntu",
+            "type": "amazon-ebs"
+        },
+        {
+            "access_key": "{{user `aws_access_key_id`}}",
+            "ami_description": "{{user `image_name`}}",
+            "ami_groups": "all",
+            "ami_name": "{{user `image_name`}}",
+            "instance_type": "t2.medium",
+            "name": "aws-eu-west-2",
+            "region": "eu-west-2",
+            "secret_key": "{{user `aws_secret_access_key`}}",
+            "source_ami": "ami-f1d7c395",
+            "ssh_username": "ubuntu",
+            "type": "amazon-ebs"
+        },
+        {
+            "access_key": "{{user `aws_access_key_id`}}",
+            "ami_description": "{{user `image_name`}}",
+            "ami_groups": "all",
+            "ami_name": "{{user `image_name`}}",
+            "instance_type": "m3.medium",
+            "name": "aws-us-east-1",
+            "region": "us-east-1",
+            "secret_key": "{{user `aws_secret_access_key`}}",
+            "source_ami": "ami-80861296",
+            "ssh_username": "ubuntu",
+            "type": "amazon-ebs"
+        },
+        {
+            "access_key": "{{user `aws_access_key_id`}}",
+            "ami_description": "{{user `image_name`}}",
+            "ami_groups": "all",
+            "ami_name": "{{user `image_name`}}",
+            "instance_type": "t2.medium",
+            "name": "aws-us-east-2",
+            "region": "us-east-2",
+            "secret_key": "{{user `aws_secret_access_key`}}",
+            "source_ami": "ami-618fab04",
+            "ssh_username": "ubuntu",
+            "type": "amazon-ebs"
+        },
+        {
+            "access_key": "{{user `aws_access_key_id`}}",
+            "ami_description": "{{user `image_name`}}",
+            "ami_groups": "all",
+            "ami_name": "{{user `image_name`}}",
+            "instance_type": "t2.medium",
+            "name": "aws-us-west-1",
+            "region": "us-west-1",
+            "secret_key": "{{user `aws_secret_access_key`}}",
+            "source_ami": "ami-2afbde4a",
+            "ssh_username": "ubuntu",
+            "type": "amazon-ebs"
+        },
+        {
+            "access_key": "{{user `aws_access_key_id`}}",
+            "ami_description": "{{user `image_name`}}",
+            "ami_groups": "all",
+            "ami_name": "{{user `image_name`}}",
+            "instance_type": "t2.medium",
+            "name": "aws-us-west-2",
+            "region": "us-west-2",
+            "secret_key": "{{user `aws_secret_access_key`}}",
+            "source_ami": "ami-efd0428f",
+            "ssh_username": "ubuntu",
+            "type": "amazon-ebs"
+        }
+    ],
+    "provisioners": [
+        {
+            "script": "{{pwd}}/requirements.sh",
+            "type": "shell"
+        }
+    ],
+    "variables": {
+        "aws_access_key_id": "{{env `PACKER_AWS_ACCESS_KEY_ID`}}",
+        "aws_secret_access_key": "{{env `PACKER_AWS_SECRET_ACCESS_KEY`}}",
+        "current_version": "{{env `CURRENT_VERSION`}}",
+        "image_name": "{{env `PACKER_IMAGE_NAME`}}",
+        "region": "{{env `PACKER_REGION`}}",
+        "source_image_id": "{{env `PACKER_SOURCE_IMAGE_ID`}}"
+    }
 }
