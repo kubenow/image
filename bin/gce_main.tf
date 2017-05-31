@@ -50,8 +50,8 @@ resource "google_compute_instance" "kubenow-image-export" {
 
   #Provisioners: copying files so to be executed remotely on the VM instance
   provisioner "file" {
-    source      = "../secrets-kubenow/host_cloud/aws.sh"
-    destination = "/tmp/aws.sh"
+    source      = "aws_credentials.sh"
+    destination = "/tmp/aws_credentials.sh"
 
     connection {
       type  = "ssh"
