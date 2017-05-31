@@ -1,5 +1,8 @@
 language: python
 
+notifications:
+  email: false
+
 sudo: required
 
 env:
@@ -9,6 +12,7 @@ env:
   matrix:
     - HOST_CLOUD=gce
     - HOST_CLOUD=aws
+    - HOST_CLOUD=openstack
 
 addons:
   apt:
@@ -33,7 +37,7 @@ before_install:
   # Add the keypair to the agent
   - eval "$(ssh-agent -s)"
   - ssh-add keys/id_rsa
-
+  
   # CHECK CODE QUALITY
   # Installing Terraform and check with fmt command
   - >
@@ -41,13 +45,13 @@ before_install:
       https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
       > /tmp/terraform.zip
   - unzip /tmp/terraform.zip -d /tmp/
-  
-  - /tmp/terraform fmt bin/gce_main.tf
+  - /tmp/terraform fmt bin/os_main.tf
   - git diff --exit-code # this will fail if terraform changed something
   
   # Check Json
-  - python -mjson.tool < build-"$HOST_CLOUD".json
-  
+  - echo "$(python -mjson.tool < $HOST_CLOUD.json)" > "$HOST_CLOUD".json 
+  - git diff --exit-code
+
   # check Shell
   - shellcheck $(find . -type f -name "*.sh")
 
@@ -60,8 +64,12 @@ install:
       > /tmp/packer.zip
   - unzip /tmp/packer.zip -d /tmp/
   
-  # AWS command-line client
+  # Jinja2 and its line interface
   - pip install --upgrade pip
+  - pip install Jinja2
+  - pip install j2cli
+  
+  # AWS command-line client
   - pip install awscli
   
   # Google Cloud Engine SDK kit
@@ -84,30 +92,26 @@ install:
 before_script:
   # Get current_version, variable common to all three platforms
   - source ./bin/get_current_version.sh
+  - export IMAGE_NAME="$IMAGE_NAME""$CURRENT_VERSION"
+  - echo -e "Image name is:$IMAGE_NAME"
 
-  # Debug CI env
-  - echo "CI environmental variables are:"
-  - env
-
-  # Common
+  # Common travis ssh directory for all providers
   - mkdir -p ~/.ssh/ && cp keys/id_rsa.pub ~/.ssh/id_rsa.pub
 
   # Variable needed only for GCE
   - export playbook_dir=./
 
- # GCE login
-    #Getting GCE credential from environmental variable, pretty-print and format the json
+  # GCE login
   - echo $GCE_KEY > ./bin/account_file.json
-  - python -mjson.tool < ./bin/account_file.json > ./bin/tmp_file
-  - mv ./bin/tmp_file ./bin/account_file.json
+ 
   - >
       gcloud auth activate-service-account
       12202776487-compute@developer.gserviceaccount.com
-      --key-file=bin/account_file.json
+      --key-file=$GCE_ACCOUNT_FILE_PATH
   - >
       gcloud auth login 12202776487-compute@developer.gserviceaccount.com
       --project phenomenal-1145 -q
 
 script:
-  # Finally bulding the image with packer 
-- travis_retry /tmp/packer build -force build-"$HOST_CLOUD".json
+  # Finally bulding the image with packer travis_retry 
+  - /tmp/packer build -force build-"$HOST_CLOUD".json

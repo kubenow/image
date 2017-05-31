@@ -1,0 +1,39 @@
+{
+   "variables":{
+      "image_name":"{{env `IMAGE_NAME`}}",
+      "source_image_name":"{{env `OS_SOURCE_IMAGE_NAME`}}",
+      "network":"{{env `OS_NETWORK`}}",
+      "flavor":"{{env `OS_FLAVOR`}}",
+      "floating_ip_pool":"{{env `OS_POOL_NAME`}}"
+   },
+   "builders":[
+      {
+         "name":"all",
+         "type":"openstack",
+         "image_name":"{{user `image_name`}}",
+         "source_image_name":"{{user `source_image_name`}}",
+         "flavor":"{{user `flavor`}}",
+         "networks":[
+            "{{user `network`}}"
+         ],
+         "floating_ip_pool":"{{user `floating_ip_pool`}}",
+         "ssh_username":"ubuntu"
+      }
+   ],
+   "provisioners":[
+      {
+         "type":"shell",
+         "inline": ["sudo sed -i /etc/hosts -e \"s/^127.0.0.1 localhost$/127.0.0.1 localhost $(hostname)/\""]
+      },
+      {
+         "type":"shell",
+         "script":"{{pwd}}/requirements.sh"
+      }
+   ],
+   "post-processors":[
+      {
+         "type":"shell-local",
+         "script":"{{pwd}}/bin/os_pp.sh"
+      }
+   ]
+}
