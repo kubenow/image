@@ -33,9 +33,6 @@ before_install:
   # Add the keypair to the agent
   - eval "$(ssh-agent -s)"
   - ssh-add keys/id_rsa
-  
-  # Get secrets
-  - git clone git@github.com:mcapuccini/secrets-kubenow.git secrets-kubenow
 
   # CHECK CODE QUALITY
   # Installing Terraform and check with fmt command
@@ -44,6 +41,7 @@ before_install:
       https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
       > /tmp/terraform.zip
   - unzip /tmp/terraform.zip -d /tmp/
+  
   - /tmp/terraform fmt bin/gce_main.tf
   - git diff --exit-code # this will fail if terraform changed something
   
@@ -51,7 +49,7 @@ before_install:
   - python -mjson.tool < build-"$HOST_CLOUD".json
   
   # check Shell
-  - shellcheck -x $(find . -type f -name "*.sh")
+  - shellcheck $(find . -type f -name "*.sh")
 
 install:
   # INSTALL DEPS
@@ -62,12 +60,8 @@ install:
       > /tmp/packer.zip
   - unzip /tmp/packer.zip -d /tmp/
   
-  # Jinja2 and its line interface
-  - pip install --upgrade pip
-  - pip install Jinja2
-  - pip install j2cli
-  
   # AWS command-line client
+  - pip install --upgrade pip
   - pip install awscli
   
   # Google Cloud Engine SDK kit
@@ -90,10 +84,10 @@ install:
 before_script:
   # Get current_version, variable common to all three platforms
   - source ./bin/get_current_version.sh
-  
-  # Source Environment
-  - source secrets-kubenow/host_cloud/aws.sh
-  - source secrets-kubenow/host_cloud/gce.sh
+
+  # Debug CI env
+  - echo "CI environmental variables are:"
+  - env
 
   # Common
   - mkdir -p ~/.ssh/ && cp keys/id_rsa.pub ~/.ssh/id_rsa.pub
@@ -102,19 +96,18 @@ before_script:
   - export playbook_dir=./
 
  # GCE login
+    #Getting GCE credential from environmental variable, pretty-print and format the json
+  - echo $GCE_KEY > ./bin/account_file.json
+  - python -mjson.tool < ./bin/account_file.json > ./bin/tmp_file
+  - mv ./bin/tmp_file ./bin/account_file.json
   - >
       gcloud auth activate-service-account
       12202776487-compute@developer.gserviceaccount.com
-      --key-file=secrets-kubenow/host_cloud/gce-key.json
+      --key-file=bin/account_file.json
   - >
       gcloud auth login 12202776487-compute@developer.gserviceaccount.com
       --project phenomenal-1145 -q
-      
-  - cp secrets-kubenow/host_cloud/gce-key.json ./bin/account_file.json
-
-  # Render templates from tmp/secrets-kubenow/packer into tmp/packer
-  - env | j2 --format=env secrets-kubenow/packer/"$HOST_CLOUD".json.j2 > secrets-kubenow/packer/"$HOST_CLOUD".json
 
 script:
   # Finally bulding the image with packer 
-- travis_retry /tmp/packer build -force -var-file=secrets-kubenow/packer/"$HOST_CLOUD".json build-"$HOST_CLOUD".json
+- travis_retry /tmp/packer build -force build-"$HOST_CLOUD".json
