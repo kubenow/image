@@ -1,6 +1,5 @@
-#Openstack credentials and instance settings, SSH Variables and current image version
+# Openstack credentials and instance settings, SSH Variables and current image version
 variable username {}
-
 variable password {}
 variable auth_url {}
 variable user_domain_id {}

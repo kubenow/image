@@ -28,7 +28,7 @@ export TF_VAR_kubenow_image_name="kubenow-$CURRENT_VERSION"
 # Let's take the case of a release, e.g v030. Searching for "kubenow-v030" will also retunr "-test" and "-current" images
 # Hence we need to check whether or not current version is tagged as release
 if [[ "$CURRENT_VERSION" =~ $KUBENOW_REGEX ]]; then
-	echo "Kubenow current version tagged as release"
+    echo "Kubenow current version tagged as release"
     IMAGE_ID=$(glance image-list | grep "kubenow-$CURRENT_VERSION[^-]")
 else
     echo "Kubenow current version tagged as \"test\" or \"current\""
