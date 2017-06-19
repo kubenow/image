@@ -9,6 +9,7 @@ env:
   matrix:
     - HOST_CLOUD=gce
     - HOST_CLOUD=aws
+    - HOST_CLOUD=openstack
 
 addons:
   apt:
@@ -44,11 +45,11 @@ before_install:
       https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
       > /tmp/terraform.zip
   - unzip /tmp/terraform.zip -d /tmp/
-  - /tmp/terraform fmt bin/gce_main.tf
+  - /tmp/terraform fmt bin/os_main.tf
   - git diff --exit-code # this will fail if terraform changed something
   
   # Check Json
-  - echo "$(python -mjson.tool < build-aws.json)" > build-aws.json 
+  - echo "$(python -mjson.tool < $HOST_CLOUD.json)" > "$HOST_CLOUD".json 
   - git diff --exit-code
 
   
@@ -96,6 +97,7 @@ before_script:
   # Source Environment
   - source secrets-kubenow/host_cloud/aws.sh
   - source secrets-kubenow/host_cloud/gce.sh
+  - source secrets-kubenow/host_cloud/CityCloud.sh
 
   # Common
   - mkdir -p ~/.ssh/ && cp keys/id_rsa.pub ~/.ssh/id_rsa.pub
@@ -118,5 +120,5 @@ before_script:
   - env | j2 --format=env secrets-kubenow/packer/"$HOST_CLOUD".json.j2 > secrets-kubenow/packer/"$HOST_CLOUD".json
 
 script:
-  # Finally bulding the image with packer 
+  # Finally bulding the image with packer
 - travis_retry /tmp/packer build -force -var-file=secrets-kubenow/packer/"$HOST_CLOUD".json build-"$HOST_CLOUD".json
