@@ -24,16 +24,9 @@ export TF_VAR_ssh_key_pub="${HOME}/.ssh/id_rsa.pub"
 export TF_VAR_current_version=$CURRENT_VERSION
 export TF_VAR_kubenow_image_name="kubenow-$CURRENT_VERSION"
 
-# Parsing KubeNow image ID of newly crated one. The following lines of code are necessary.
-# Let's take the case of a release, e.g v030. Searching for "kubenow-v030" will also retunr "-test" and "-current" images
-# Hence we need to check whether or not current version is tagged as release
-if [[ "$CURRENT_VERSION" =~ $KUBENOW_REGEX ]]; then
-    echo "Kubenow current version tagged as release"
-    IMAGE_ID=$(glance image-list | grep "kubenow-$CURRENT_VERSION[^-]")
-else
-    echo "Kubenow current version tagged as \"test\" or \"current\""
-    IMAGE_ID=$(glance image-list | grep "kubenow-$CURRENT_VERSION")
-fi
+# Parsing KubeNow image ID of newly crated one.
+IMAGE_ID=$(glance image-list | grep "kubenow-$CURRENT_VERSION[^-]")
+
 # Just doing some text manipulation so to obtain a plain string, no spaces, no tab signs
 IMAGE_ID=$(echo "$IMAGE_ID" | sed "s/| //;s/ | .*$//g")
 export TF_VAR_kubenow_image_id=$IMAGE_ID
