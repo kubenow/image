@@ -25,7 +25,7 @@ export TF_VAR_current_version=$CURRENT_VERSION
 export TF_VAR_kubenow_image_name="kubenow-$CURRENT_VERSION"
 
 # Parsing KubeNow image ID of newly crated one.
-IMAGE_ID=$(glance image-list | grep "kubenow-$CURRENT_VERSION[^-]")
+IMAGE_ID=$(glance image-list | grep "\skubenow-$CURRENT_VERSION\s")
 
 # Just doing some text manipulation so to obtain a plain string, no spaces, no tab signs
 IMAGE_ID=$(echo "$IMAGE_ID" | sed "s/| //;s/ | .*$//g")
