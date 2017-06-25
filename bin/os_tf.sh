@@ -32,3 +32,6 @@ echo "Uploading new image format into AWS S3 bucket: kubenow-us-east-1 ..."
 echo "Sourcing AWS environment"
 source /tmp/aws.sh
 aws s3 cp "$kubenow_image_name".qcow2 s3://kubenow-us-east-1 --region us-east-1 --acl public-read --quiet
+
+# Copy file to bucket in other aws region
+aws s3 cp "s3://kubenow-us-east-1/$kubenow_image_name" s3://kubenow-eu-frankfurt/ --acl public-read --quiet
