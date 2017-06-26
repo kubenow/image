@@ -6,6 +6,8 @@ env:
   global:
     - TERRAFORM_VERSION=0.9.4
     - PACKER_VERSION=1.0.0
+    - PACKER_LOG=0
+    - TF_LOG=ERROR
   matrix:
     - HOST_CLOUD=gce
     - HOST_CLOUD=aws
