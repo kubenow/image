@@ -65,5 +65,16 @@ sudo chmod 0755 /usr/local/bin/heketi-cli
 rm -R /tmp/heketi-client/
 
 echo "Pulling required Docker images..."
+# Essential Kubernetes containers are listed in 
+# https://github.com/kubernetes/kubernetes/blob/master/cmd/kubeadm/app/images/images.go
+KUBE_VERSION="v1.6.4"
+ETCD_VERSION="3.0.17"
 sudo docker pull \
-  kubenow/gluster-server:0.1.0
+  gcr.io/google_containers/kube-apiserver-amd64:$KUBE_VERSION \
+  gcr.io/google_containers/kube-proxy-amd64:$KUBE_VERSION \
+  gcr.io/google_containers/kube-controller-manager-amd64:$KUBE_VERSION \
+  gcr.io/google_containers/kube-scheduler-amd64:$KUBE_VERSION
+  gcr.io/google_containers/etcd-amd64:$ETCD_VERSION
+  gcr.io/google_containers/pause-amd64:3.0
+
+kubenow/gluster-server:0.1.0
