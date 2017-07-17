@@ -2,7 +2,7 @@
 
 Collection of templates for building the KubeNow image.
 
-[![Build Status](https://travis-ci.org/kubenow/KubeNow.svg?branch=master)](https://travis-ci.org/kubenow/KubeNow)
+[![Build Status](https://travis-ci.org/kubenow/image.svg?branch=master)](https://travis-ci.org/kubenow/image)
 
 ## Image Building
 
