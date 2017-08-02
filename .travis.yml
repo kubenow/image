@@ -1,8 +1,5 @@
 language: python
 
-notifications:
-  email: false
-
 sudo: required
 
 env:
@@ -113,5 +110,5 @@ before_script:
       --project phenomenal-1145 -q
 
 script:
-  # Finally bulding the image with packer travis_retry 
-  - /tmp/packer build -force build-"$HOST_CLOUD".json
+  # Finally bulding the image with packer  
+  - travis_retry /tmp/packer build -force build-"$HOST_CLOUD".json

@@ -36,9 +36,9 @@ echo "Installing Kubernetes requirements..."
 sudo apt-get install -y \
   docker-engine=1.12.5-0~ubuntu-xenial \
   kubernetes-cni=0.5.1-00 \
-  kubeadm=1.6.1-00 \
-  kubelet=1.6.1-00 \
-  kubectl=1.6.1-00
+  kubeadm=1.6.4-00 \
+  kubelet=1.6.4-00 \
+  kubectl=1.6.4-00
 
 echo "Installing other requirements..."
 # APT requirements
@@ -47,13 +47,22 @@ sudo apt-get install -y \
   daemon \
   attr \
   glusterfs-client \
+  nfs-common \
   jq
 
 # Helm
-HELM_TGZ=helm-v2.1.0-linux-amd64.tar.gz
+HELM_TGZ=helm-v2.4.1-linux-amd64.tar.gz
 wget -P /tmp/ https://kubernetes-helm.storage.googleapis.com/$HELM_TGZ
 tar -xf /tmp/$HELM_TGZ -C /tmp/
 sudo mv /tmp/linux-amd64/helm /usr/local/bin/
+
+# Heketi
+HEKETI_TGZ=heketi-client-v4.0.0.linux.amd64.tar.gz
+wget -P /tmp/ https://github.com/heketi/heketi/releases/download/v4.0.0/$HEKETI_TGZ
+tar -xf /tmp/$HEKETI_TGZ -C /tmp/
+sudo mv /tmp/heketi-client/bin/heketi-cli /usr/local/bin/
+sudo chmod 0755 /usr/local/bin/heketi-cli
+rm -R /tmp/heketi-client/
 
 echo "Pulling required Docker images..."
 sudo docker pull \
