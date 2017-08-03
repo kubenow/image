@@ -1,11 +1,11 @@
 {
   "variables": {
-    "image_name": "{{env `PACKER_IMAGE_NAME`}}",
-    "source_image_name": "{{env `PACKER_SOURCE_IMAGE_NAME`}}",
+    "image_name": "{{env `IMAGE_NAME`}}",
+    "source_image_name": "{{env `GCE_SOURCE_IMAGE_NAME`}}",
     "network": "{{env `PACKER_NETWORK`}}",
-    "account_file": "{{env `PACKER_GCE_ACCOUNT_FILE`}}",
-    "zone": "{{env `PACKER_GCE_ZONE`}}",
-    "project_id": "{{env `PACKER_GCE_PROJECT_ID`}}",
+    "account_file": "{{env `GCE_ACCOUNT_FILE_PATH`}}",
+    "zone": "{{env `GCE_ZONE`}}",
+    "project_id": "{{env `GCE_PROJECT_ID`}}",
     "current_version": "{{env `CURRENT_VERSION`}}"
   },
   "builders": [

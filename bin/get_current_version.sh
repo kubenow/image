@@ -3,10 +3,10 @@
 
 # Get current_version
 CURRENT_VERSION=v$(git describe --tags --always | tr -d .)
-KUBENOW_REGEX='^v[0-9]{3}([ab][0-9]{1,}|rc[0-9]{1,})?$'
+regex='^v[0-9]{3}([ab][0-9]{1,}|rc[0-9]{1,})?$'
 
 # Checking whether or not current version is tagged as release
-if [[ "$CURRENT_VERSION" =~ $KUBENOW_REGEX ]]; then
+if [[ "$CURRENT_VERSION" =~ $regex ]]; then
 	echo "Kubenow current version tagged as release"
 elif [ "$TRAVIS_BRANCH" == 'master' ]; then
 	CURRENT_VERSION="${CURRENT_VERSION}-current"

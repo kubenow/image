@@ -20,7 +20,7 @@ sudo pip install python-glanceclient
 # Donwloading newly created KubeNow from OS
 echo "Downloading KubeNow image from Openstack..."
 echo "Sourcing Openstack environment"
-source /tmp/citycloud.sh
+source /tmp/aws_and_os.sh
 glance image-download --file "$kubenow_image_name" "$kubenow_image_id"
 
 # Converting image from raw to qcow format.
@@ -32,8 +32,6 @@ md5sum "$kubenow_image_name".qcow2 > "$kubenow_image_name".qcow2.md5
 
 # Uploading the new image format to the AWS S3 bucket. Previous copy will be overwritten.
 echo "Uploading new image format into AWS S3 bucket: kubenow-us-east-1 ..."
-echo "Sourcing AWS environment"
-source /tmp/aws.sh
 aws s3 cp "$kubenow_image_name".qcow2 s3://kubenow-us-east-1 --region us-east-1 --acl public-read --quiet
 aws s3 cp "$kubenow_image_name".qcow2.md5 s3://kubenow-us-east-1 --region us-east-1 --acl public-read --quiet
 
