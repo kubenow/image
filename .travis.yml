@@ -35,9 +35,6 @@ before_install:
   - eval "$(ssh-agent -s)"
   - ssh-add keys/id_rsa
   
-  # Get secrets
-  - git clone git@github.com:mcapuccini/secrets-kubenow.git secrets-kubenow
-
   # CHECK CODE QUALITY
   # Installing Terraform and check with fmt command
   - >
@@ -52,7 +49,6 @@ before_install:
   - echo "$(python -mjson.tool < $HOST_CLOUD.json)" > "$HOST_CLOUD".json 
   - git diff --exit-code
 
-  
   # check Shell
   - shellcheck $(find . -type f -name "*.sh")
 
@@ -93,32 +89,26 @@ install:
 before_script:
   # Get current_version, variable common to all three platforms
   - source ./bin/get_current_version.sh
-  
-  # Source Environment
-  - source secrets-kubenow/host_cloud/aws.sh
-  - source secrets-kubenow/host_cloud/gce.sh
-  - source secrets-kubenow/host_cloud/CityCloud.sh
+  - export IMAGE_NAME="$IMAGE_NAME""$CURRENT_VERSION"
+  - echo -e "Image name is:$IMAGE_NAME"
 
-  # Common
+  # Common travis ssh directory for all providers
   - mkdir -p ~/.ssh/ && cp keys/id_rsa.pub ~/.ssh/id_rsa.pub
 
   # Variable needed only for GCE
   - export playbook_dir=./
 
- # GCE login
+  # GCE login
+  - echo $GCE_KEY > ./bin/account_file.json
+ 
   - >
       gcloud auth activate-service-account
       12202776487-compute@developer.gserviceaccount.com
-      --key-file=secrets-kubenow/host_cloud/gce-key.json
+      --key-file=$GCE_ACCOUNT_FILE_PATH
   - >
       gcloud auth login 12202776487-compute@developer.gserviceaccount.com
       --project phenomenal-1145 -q
-      
-  - cp secrets-kubenow/host_cloud/gce-key.json ./bin/account_file.json
-
-  # Render templates from tmp/secrets-kubenow/packer into tmp/packer
-  - env | j2 --format=env secrets-kubenow/packer/"$HOST_CLOUD".json.j2 > secrets-kubenow/packer/"$HOST_CLOUD".json
 
 script:
-  # Finally bulding the image with packer
-- travis_retry /tmp/packer build -force -var-file=secrets-kubenow/packer/"$HOST_CLOUD".json build-"$HOST_CLOUD".json
+  # Finally bulding the image with packer  
+  - travis_retry /tmp/packer build -force build-"$HOST_CLOUD".json

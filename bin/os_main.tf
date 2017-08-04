@@ -56,19 +56,8 @@ resource "openstack_compute_instance_v2" "kubenow-image-export" {
 
   # Provisioners: copying files so to be executed remotely on the VM instance
   provisioner "file" {
-    source      = "../secrets-kubenow/host_cloud/aws.sh"
-    destination = "/tmp/aws.sh"
-
-    connection {
-      type  = "ssh"
-      user  = "${var.ssh_user}"
-      agent = "true"
-    }
-  }
-
-  provisioner "file" {
-    source      = "../secrets-kubenow/host_cloud/CityCloud.sh"
-    destination = "/tmp/citycloud.sh"
+    source      = "/tmp/aws_and_os.sh"
+    destination = "/tmp/aws_and_os.sh"
 
     connection {
       type  = "ssh"
