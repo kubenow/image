@@ -68,8 +68,8 @@ echo "Pulling required Docker images..."
 # Essential Kubernetes containers are listed in following files
 # https://github.com/kubernetes/kubernetes/blob/master/cmd/kubeadm/app/images/images.go
 # https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/dns/kubedns-controller.yaml.base
-KUBE_VERSION="v1.6.4"
-KUBE_DNS_VERSION="1.14.1"
+KUBE_VERSION="v1.6.8"
+KUBE_DNS_VERSION="1.14.4"
 ETCD_VERSION="3.0.17"
 WEAVE_VERSION="1.9.8"
 sudo docker pull gcr.io/google_containers/kube-apiserver-amd64:$KUBE_VERSION
