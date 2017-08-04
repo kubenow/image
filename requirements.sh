@@ -36,9 +36,9 @@ echo "Installing Kubernetes requirements..."
 sudo apt-get install -y \
   docker-engine=1.12.5-0~ubuntu-xenial \
   kubernetes-cni=0.5.1-00 \
-  kubeadm=1.6.4-00 \
-  kubelet=1.6.4-00 \
-  kubectl=1.6.4-00
+  kubeadm=1.6.7-00 \
+  kubelet=1.6.7-00 \
+  kubectl=1.6.7-00
 
 echo "Installing other requirements..."
 # APT requirements
@@ -68,7 +68,7 @@ echo "Pulling required Docker images..."
 # Essential Kubernetes containers are listed in following files
 # https://github.com/kubernetes/kubernetes/blob/master/cmd/kubeadm/app/images/images.go
 # https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/dns/kubedns-controller.yaml.base
-KUBE_VERSION="v1.6.8"
+KUBE_VERSION="v1.6.7"
 KUBE_DNS_VERSION="1.14.4"
 ETCD_VERSION="3.0.17"
 WEAVE_VERSION="1.9.8"
