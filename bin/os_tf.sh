@@ -36,5 +36,5 @@ aws s3 cp "$kubenow_image_name".qcow2 s3://kubenow-us-east-1 --region us-east-1 
 aws s3 cp "$kubenow_image_name".qcow2.md5 s3://kubenow-us-east-1 --region us-east-1 --acl public-read --quiet
 
 # Copy file to bucket in other aws region
-aws s3 cp "s3://kubenow-us-east-1/$kubenow_image_name".qcow2 s3://kubenow-eu-frankfurt/ --region us-east-1 --region eu-central-1 --acl public-read
-aws s3 cp "s3://kubenow-us-east-1/$kubenow_image_name".qcow2.md5 s3://kubenow-eu-frankfurt/ --region us-east-1 --region eu-central-1 --acl public-read
+aws s3 cp "s3://kubenow-us-east-1/$kubenow_image_name".qcow2 s3://kubenow-eu-central-1/ --region us-east-1 --region eu-central-1 --acl public-read
+aws s3 cp "s3://kubenow-us-east-1/$kubenow_image_name".qcow2.md5 s3://kubenow-eu-central-1/ --region us-east-1 --region eu-central-1 --acl public-read
