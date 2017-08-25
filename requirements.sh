@@ -36,9 +36,9 @@ echo "Installing Kubernetes requirements..."
 sudo apt-get install -y \
   docker-engine=1.12.5-0~ubuntu-xenial \
   kubernetes-cni=0.5.1-00 \
-  kubeadm=1.6.4-00 \
-  kubelet=1.6.4-00 \
-  kubectl=1.6.4-00
+  kubeadm=1.6.7-00 \
+  kubelet=1.6.7-00 \
+  kubectl=1.6.7-00
 
 echo "Installing other requirements..."
 # APT requirements
@@ -65,5 +65,20 @@ sudo chmod 0755 /usr/local/bin/heketi-cli
 rm -R /tmp/heketi-client/
 
 echo "Pulling required Docker images..."
-sudo docker pull \
-  kubenow/gluster-server:0.1.0
+# Essential Kubernetes containers are listed in following files
+# https://github.com/kubernetes/kubernetes/blob/master/cmd/kubeadm/app/images/images.go
+# https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/dns/kubedns-controller.yaml.base
+KUBE_VERSION="v1.6.7"
+KUBE_DNS_VERSION="1.14.4"
+ETCD_VERSION="3.0.17"
+WEAVE_VERSION="1.9.8"
+sudo docker pull gcr.io/google_containers/kube-apiserver-amd64:$KUBE_VERSION
+sudo docker pull gcr.io/google_containers/kube-proxy-amd64:$KUBE_VERSION
+sudo docker pull gcr.io/google_containers/kube-controller-manager-amd64:$KUBE_VERSION
+sudo docker pull gcr.io/google_containers/kube-scheduler-amd64:$KUBE_VERSION
+sudo docker pull gcr.io/google_containers/etcd-amd64:$ETCD_VERSION
+sudo docker pull gcr.io/google_containers/pause-amd64:3.0
+sudo docker pull weaveworks/weave-kube:$WEAVE_VERSION
+sudo docker pull gcr.io/google_containers/k8s-dns-sidecar-amd64:$KUBE_DNS_VERSION
+sudo docker pull gcr.io/google_containers/k8s-dns-kube-dns-amd64:$KUBE_DNS_VERSION
+sudo docker pull gcr.io/google_containers/k8s-dns-dnsmasq-nanny-amd64:$KUBE_DNS_VERSION
