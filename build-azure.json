@@ -13,20 +13,20 @@
          "client_secret": "{{user `arm_client_secret`}}",
          "subscription_id": "{{user `arm_subscription_id`}}",
          "tenant_id": "{{user `arm_tenant_id`}}",
-         
+
          "managed_image_name": "{{user `image_name`}}",
          "managed_image_resource_group_name": "{{user `resource_group`}}",
-         
+
          "os_type": "Linux",
          "image_publisher": "Canonical",
          "image_offer": "UbuntuServer",
          "image_sku": "16.04-LTS",
          "image_version": "latest",
-         
+
          "azure_tags": {
            "dept": "mydepartment"
          },
-         
+
          "location": "West Europe",
          "vm_size": "Standard_A1"
       }
