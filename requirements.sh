@@ -36,9 +36,9 @@ echo "Installing Kubernetes requirements..."
 sudo apt-get install -y \
   docker-engine=1.12.5-0~ubuntu-xenial \
   kubernetes-cni=0.5.1-00 \
-  kubeadm=1.6.7-00 \
-  kubelet=1.6.7-00 \
-  kubectl=1.6.7-00
+  kubeadm=1.7.5-00 \
+  kubelet=1.7.5-00 \
+  kubectl=1.7.5-00
 
 echo "Installing other requirements..."
 # APT requirements
@@ -51,14 +51,14 @@ sudo apt-get install -y \
   jq
 
 # Helm
-HELM_TGZ=helm-v2.4.1-linux-amd64.tar.gz
+HELM_TGZ=helm-v2.6.1-linux-amd64.tar.gz
 wget -P /tmp/ https://kubernetes-helm.storage.googleapis.com/$HELM_TGZ
 tar -xf /tmp/$HELM_TGZ -C /tmp/
 sudo mv /tmp/linux-amd64/helm /usr/local/bin/
 
 # Heketi
-HEKETI_TGZ=heketi-client-v4.0.0.linux.amd64.tar.gz
-wget -P /tmp/ https://github.com/heketi/heketi/releases/download/v4.0.0/$HEKETI_TGZ
+HEKETI_TGZ=download/v5.0.0/heketi-client-v5.0.0.linux.amd64.tar.gz
+wget -P /tmp/ https://github.com/heketi/heketi/releases/$HEKETI_TGZ
 tar -xf /tmp/$HEKETI_TGZ -C /tmp/
 sudo mv /tmp/heketi-client/bin/heketi-cli /usr/local/bin/
 sudo chmod 0755 /usr/local/bin/heketi-cli
@@ -66,12 +66,12 @@ rm -R /tmp/heketi-client/
 
 echo "Pulling required Docker images..."
 # Essential Kubernetes containers are listed in following files
-# https://github.com/kubernetes/kubernetes/blob/master/cmd/kubeadm/app/images/images.go
-# https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/dns/kubedns-controller.yaml.base
-KUBE_VERSION="v1.6.7"
-KUBE_DNS_VERSION="1.14.4"
+# https://github.com/kubernetes/kubernetes/blob/master/cmd/kubeadm/app/constants/constants.go (etcd-version)
+# https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/dns/kubedns-controller.yaml.base (kube-dns-version)
+KUBE_VERSION="v1.7.5"
+KUBE_DNS_VERSION="1.14.5"
 ETCD_VERSION="3.0.17"
-WEAVE_VERSION="1.9.8"
+WEAVE_VERSION="2.0.4"
 sudo docker pull gcr.io/google_containers/kube-apiserver-amd64:$KUBE_VERSION
 sudo docker pull gcr.io/google_containers/kube-proxy-amd64:$KUBE_VERSION
 sudo docker pull gcr.io/google_containers/kube-controller-manager-amd64:$KUBE_VERSION
