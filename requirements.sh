@@ -57,8 +57,8 @@ tar -xf /tmp/$HELM_TGZ -C /tmp/
 sudo mv /tmp/linux-amd64/helm /usr/local/bin/
 
 # Heketi
-HEKETI_TGZ=download/v5.0.0/heketi-client-v5.0.0.linux.amd64.tar.gz
-wget -P /tmp/ https://github.com/heketi/heketi/releases/$HEKETI_TGZ
+HEKETI_TGZ=heketi-client-v5.0.0.linux.amd64.tar.gz
+wget -P /tmp/ https://github.com/heketi/heketi/releases/download/v5.0.0/$HEKETI_TGZ
 tar -xf /tmp/$HEKETI_TGZ -C /tmp/
 sudo mv /tmp/heketi-client/bin/heketi-cli /usr/local/bin/
 sudo chmod 0755 /usr/local/bin/heketi-cli
