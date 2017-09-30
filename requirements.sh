@@ -65,7 +65,7 @@ sudo chmod 0755 /usr/local/bin/heketi-cli
 rm -R /tmp/heketi-client/
 
 echo "Pulling required Docker images..."
-# Essential Kubernetes containers are listed in following files
+# Essential Kubernetes containers are listed in following files:
 # https://github.com/kubernetes/kubernetes/blob/master/cmd/kubeadm/app/constants/constants.go (etcd-version)
 # https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/dns/kubedns-controller.yaml.base (kube-dns-version)
 KUBE_VERSION="v1.7.5"
