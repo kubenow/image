@@ -22,7 +22,7 @@ sudo apt-key adv \
 sudo sh -c 'echo "deb https://apt.dockerproject.org/repo ubuntu-xenial main" > /etc/apt/sources.list.d/docker.list'
 
 echo "Add GlusterFS repo..."
-sudo add-apt-repository -y ppa:gluster/glusterfs-3.9
+sudo add-apt-repository -y ppa:gluster/glusterfs-3.12
 
 echo "Updating Ubuntu..."
 sudo apt-get update -y
