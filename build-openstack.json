@@ -1,10 +1,10 @@
 {
    "variables":{
-      "image_name":"{{env `PACKER_IMAGE_NAME`}}",
-      "source_image_name":"{{env `PACKER_SOURCE_IMAGE_NAME`}}",
-      "network":"{{env `PACKER_NETWORK`}}",
-      "flavor":"{{env `PACKER_FLAVOR`}}",
-      "floating_ip_pool":"{{env `PACKER_FLOATING_IP_POOL`}}"
+      "image_name":"{{env `IMAGE_NAME`}}",
+      "source_image_name":"{{env `OS_SOURCE_IMAGE_NAME`}}",
+      "network":"{{env `OS_NETWORK`}}",
+      "flavor":"{{env `OS_FLAVOR`}}",
+      "floating_ip_pool":"{{env `OS_POOL_NAME`}}"
    },
    "builders":[
       {
