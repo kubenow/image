@@ -22,7 +22,7 @@ sudo apt-key adv \
 sudo sh -c 'echo "deb https://apt.dockerproject.org/repo ubuntu-xenial main" > /etc/apt/sources.list.d/docker.list'
 
 echo "Add GlusterFS repo..."
-sudo add-apt-repository -y ppa:gluster/glusterfs-3.9
+sudo add-apt-repository -y ppa:gluster/glusterfs-3.12
 
 echo "Updating Ubuntu..."
 sudo apt-get update -y
@@ -65,7 +65,7 @@ sudo chmod 0755 /usr/local/bin/heketi-cli
 rm -R /tmp/heketi-client/
 
 echo "Pulling required Docker images..."
-# Essential Kubernetes containers are listed in following files
+# Essential Kubernetes containers are listed in following files:
 # https://github.com/kubernetes/kubernetes/blob/master/cmd/kubeadm/app/constants/constants.go (etcd-version)
 # https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/dns/kubedns-controller.yaml.base (kube-dns-version)
 KUBE_VERSION="v1.7.5"
