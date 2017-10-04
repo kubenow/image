@@ -3,13 +3,9 @@ variable username {}
 
 variable password {}
 variable auth_url {}
-variable user_domain_id {}
-variable domain_id {}
 variable region_name {}
 variable project_id {}
-variable tenant_id {}
-variable tenant_name {}
-variable auth_version {}
+variable user_domain_name {}
 variable current_version {}
 variable kubenow_image_name {}
 variable kubenow_image_id {}

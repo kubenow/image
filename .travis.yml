@@ -9,8 +9,8 @@ env:
     # Workaround to build on google - See https://github.com/travis-ci/travis-ci/issues/7940
     - BOTO_CONFIG=/dev/null
   matrix:
-    - HOST_CLOUD=gce
-    - HOST_CLOUD=aws
+    #- HOST_CLOUD=gce
+    #- HOST_CLOUD=aws
     - HOST_CLOUD=openstack
 
 addons:
