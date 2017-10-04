@@ -2,8 +2,8 @@
    "variables":{
       "image_name":"{{env `IMAGE_NAME`}}",
       "source_image_name":"{{env `OS_SOURCE_IMAGE_NAME`}}",
-      "network":"{{env `OS_NETWORK`}}",
       "flavor":"{{env `OS_FLAVOR`}}",
+      "network":"{{env `OS_NETWORK`}}",
       "floating_ip_pool":"{{env `OS_POOL_NAME`}}"
    },
    "builders":[

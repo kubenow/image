@@ -1,3 +1,6 @@
+notifications:
+  email: false
+
 language: python
 
 sudo: required
@@ -5,7 +8,7 @@ sudo: required
 env:
   global:
     - TERRAFORM_VERSION=0.9.4
-    - PACKER_VERSION=1.0.0
+    - PACKER_VERSION=1.1.0
     # Workaround to build on google - See https://github.com/travis-ci/travis-ci/issues/7940
     - BOTO_CONFIG=/dev/null
   matrix:
@@ -113,4 +116,5 @@ before_script:
 
 script:
   # Finally bulding the image with packer
-  - travis_retry /tmp/packer build -force build-"$HOST_CLOUD".json
+  #- travis_retry /tmp/packer build -force build-"$HOST_CLOUD".json
+  - PACKER_LOG=1 /tmp/packer build -force build-"$HOST_CLOUD".json
