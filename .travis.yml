@@ -117,4 +117,5 @@ before_script:
 script:
   # Finally bulding the image with packer
   #- travis_retry /tmp/packer build -force build-"$HOST_CLOUD".json
-  - PACKER_LOG=1 /tmp/packer build -force build-"$HOST_CLOUD".json
+  - /tmp/packer validate build-"$HOST_CLOUD".json
+  - travis_wait /tmp/packer build -force build-"$HOST_CLOUD".json
