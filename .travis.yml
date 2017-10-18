@@ -11,7 +11,7 @@ env:
   matrix:
     #- HOST_CLOUD=gce
     #- HOST_CLOUD=aws
-    - HOST_CLOUD=openstack
+    #- HOST_CLOUD=openstack
     - HOST_CLOUD=azure
 
 addons:
