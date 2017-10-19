@@ -27,7 +27,7 @@
          "image_publisher": "Canonical",
          "image_offer": "UbuntuServer",
          "image_sku": "16.04-LTS",
-         "image_version": "latest",
+         "image_version": "16.04.201701130",
 
          "azure_tags": {
            "project": "kubenow"
