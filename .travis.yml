@@ -12,6 +12,7 @@ env:
     - HOST_CLOUD=gce
     - HOST_CLOUD=aws
     - HOST_CLOUD=openstack
+    - HOST_CLOUD=azure
 
 addons:
   apt:
@@ -86,7 +87,8 @@ install:
       sudo apt-key add -
 
   # Update the package list and install the Cloud SDK
-  - sudo apt-get update && sudo apt-get install google-cloud-sdk
+  - sudo apt-get update
+  - sudo apt-get install google-cloud-sdk -y
 
 before_script:
   # Get current_version, variable common to all three platforms
