@@ -71,14 +71,14 @@ echo "Pulling required Docker images..."
 KUBE_VERSION="v1.7.5"
 KUBE_DNS_VERSION="1.14.5"
 ETCD_VERSION="3.0.17"
-WEAVE_VERSION="2.0.4"
+FLANNEL_VERSION="v0.9.0"
 sudo docker pull gcr.io/google_containers/kube-apiserver-amd64:$KUBE_VERSION
 sudo docker pull gcr.io/google_containers/kube-proxy-amd64:$KUBE_VERSION
 sudo docker pull gcr.io/google_containers/kube-controller-manager-amd64:$KUBE_VERSION
 sudo docker pull gcr.io/google_containers/kube-scheduler-amd64:$KUBE_VERSION
 sudo docker pull gcr.io/google_containers/etcd-amd64:$ETCD_VERSION
 sudo docker pull gcr.io/google_containers/pause-amd64:3.0
-sudo docker pull weaveworks/weave-kube:$WEAVE_VERSION
 sudo docker pull gcr.io/google_containers/k8s-dns-sidecar-amd64:$KUBE_DNS_VERSION
 sudo docker pull gcr.io/google_containers/k8s-dns-kube-dns-amd64:$KUBE_DNS_VERSION
 sudo docker pull gcr.io/google_containers/k8s-dns-dnsmasq-nanny-amd64:$KUBE_DNS_VERSION
+sudo docker pull quay.io/coreos/flannel:$FLANNEL_VERSION-amd64
