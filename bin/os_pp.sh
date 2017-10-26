@@ -2,8 +2,9 @@
 # This Script will be executed as post-processor of the Openstack packer builder. It builds a OS instance with Terraform
 
 # Installing needed tools
-pip install --upgrade pip
-pip install python-glanceclient python-neutronclient
+# NB: this bash script run in travis where sudo is required. Thus we must put sudo before the usual pip command
+sudo pip install --upgrade pip
+sudo pip install python-glanceclient python-neutronclient
 
 # Building the OS Instance
 cd ./bin || exit

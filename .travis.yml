@@ -64,14 +64,6 @@ install:
       > /tmp/packer.zip
   - unzip /tmp/packer.zip -d /tmp/
 
-  # Jinja2 and its line interface
-  - pip install --upgrade pip
-  - pip install Jinja2
-  - pip install j2cli
-
-  # AWS command-line client
-  - pip install awscli
-
   # Google Cloud Engine SDK kit
   # Create an environment variable for the correct distribution
   - export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)"
@@ -94,7 +86,6 @@ before_script:
   # Get current_version, variable common to all three platforms
   - source ./bin/get_current_version.sh
   - export IMAGE_NAME="$IMAGE_NAME""$CURRENT_VERSION"
-  - echo -e "Image name is:$IMAGE_NAME"
 
   # Common travis ssh directory for all providers
   - mkdir -p ~/.ssh/ && cp keys/id_rsa.pub ~/.ssh/id_rsa.pub
