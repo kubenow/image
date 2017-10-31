@@ -4,9 +4,14 @@ set -e
 # export ATLAS_ORG=my org
 # export ATLAS_TOKEN= token is stored somewhere else:)
 
-BOX_VERSION="0.0.6"
+USERNAME=kubenow
+BOX_VERSION="0.4.0b1"
 BOX_BASENAME="kubenow"
 DISK_SIZE=214400
+VAGRANT_CLOUD_TOKEN=p91fyJ47fXzQUg.atlasv1.bArQXqPZ0UpM76RjKIARf3jfWOkyHCPdLVnHnaokO5X9LNRSByiiQSryQVladwDVaeA
+BOX_NAME=kubenow
+VERSION=0.4.0b1
+PROVIDER=virtualbox
 
 
 # Install bento (for uploading)
@@ -19,6 +24,7 @@ git clone https://github.com/chef/bento.git
 cd bento
 git checkout eef9780188056e4b87d5db3f7a1cabbe7c7f4706
 
+# Build from ubuntu subdir
 cd ubuntu
 
 # Inject requirements script into packer builder-json
@@ -42,31 +48,46 @@ packer build --only=virtualbox-iso \
              -var "memory=1024" \
              -var "mirror=http://releases.ubuntu.com" \
              -var "mirror_directory=16.04.2" \
+             -var "headless=true" \
              kubenow.json
-             # -var "headless=true" \
 
-# create meta.json
-META=$(cat <<EOF
-{
-  "name": "$BOX_BASENAME",
-  "version": "$BOX_VERSION",
-  "box_basename": "$BOX_BASENAME",
-  "template": "$BOX_BASENAME",
-  "cpus": "1",
-  "memory": "1024",
-  "providers": [
-    {
-      "name": "virtualbox",
-      "file": "$BOX_BASENAME-$BOX_VERSION.virtualbox.box"
-    }
-  ]
-}
-EOF
-)
-echo $META > "builds/$BOX_BASENAME-$BOX_VERSION.virtualbox.json"
+# UPLOAD BOX
+# https://www.vagrantup.com/docs/vagrant-cloud/api.html
 
-# upload it
-# bento upload
+# Create a new box (not needed since kubenow are there already
+curl \
+  --header "Content-Type: application/json" \
+  --header "Authorization: Bearer $VAGRANT_CLOUD_TOKEN" \
+  https://app.vagrantup.com/api/v1/boxes \
+  --data "{ \"box\": { \"username\": \"$USERNAME\", \"name\": \"$BOX_NAME\" } }"
 
-# release it
-# bento release $BOX_BASENAME $BOX_VERSION
+# Create a new version
+curl \
+  --header "Content-Type: application/json" \
+  --header "Authorization: Bearer $VAGRANT_CLOUD_TOKEN" \
+  https://app.vagrantup.com/api/v1/box/$USERNAME/$BOX_NAME/versions \
+  --data "{ \"version\": { \"version\": \"$VERSION\" } }"
+
+# Create a new provider
+curl \
+  --header "Content-Type: application/json" \
+  --header "Authorization: Bearer $VAGRANT_CLOUD_TOKEN" \
+  https://app.vagrantup.com/api/v1/box/$USERNAME/$BOX_NAME/version/$VERSION/providers \
+  --data "{ \"provider\": { \"name\": \"$PROVIDER\" } }"
+  
+# Prepare the provider for upload/get an upload URL
+response=$(curl \
+  --header "Authorization: Bearer $VAGRANT_CLOUD_TOKEN" \
+  https://app.vagrantup.com/api/v1/box/$USERNAME/$BOX_NAME/version/$VERSION/provider/$PROVIDER/upload )
+
+# Extract the upload URL from the response (requires the jq command)
+upload_path=$(echo "$response" | jq -r .upload_path)
+
+# Perform the upload
+curl $upload_path --request PUT --upload-file builds/$BOX_NAME.$PROVIDER.box > /dev/null
+
+# Release the version
+curl \
+  --header "Authorization: Bearer $VAGRANT_CLOUD_TOKEN" \
+  https://app.vagrantup.com/api/v1/box/$USERNAME/$BOX_NAME/version/$VERSION/release \
+  --request PUT
