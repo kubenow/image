@@ -1,14 +1,18 @@
 #!/bin/bash
 set -e
 
+# create a temp working dir
+SESSION_DIR="~/sessions/travis_image_$(date '+%Y-%m-%d-%H:%M:%S')"
+mkdir -p "$SESSION_DIR"
+cd $SESSION_DIR
+
 BOX_NAME="kubenow"
-BOX_VERSION="0.4.0b1"
-VERSION="$BOX_VERSION"
+BOX_VERSION="${BOX_VERSION:=0.4.0b1}"
 BOX_BASENAME="$BOX_NAME-$BOX_VERSION"
 DISK_SIZE=214400
 PROVIDER="virtualbox"
-USERNAME="your-vagrant-cloud-username"
-VAGRANT_CLOUD_TOKEN="your-vagrant-cloud-token"
+USERNAME="${VAGRANT_CLOUD_USERNAME:=kubenow}"
+VAGRANT_CLOUD_TOKEN="${VAGRANT_CLOUD_TOKEN:=your-vagrant-cloud-token}"
 
 # clone bento-git-repo
 # checkout a speciffic master commit - in future change to release
@@ -61,7 +65,7 @@ curl \
   --header "Content-Type: application/json" \
   --header "Authorization: Bearer $VAGRANT_CLOUD_TOKEN" \
   https://app.vagrantup.com/api/v1/box/$USERNAME/$BOX_NAME/versions \
-  --data "{ \"version\": { \"version\": \"$VERSION\" } }"
+  --data "{ \"version\": { \"version\": \"$BOX_VERSION\" } }"
 
 # Create a new provider
 curl \
@@ -69,7 +73,7 @@ curl \
   --header "Authorization: Bearer $VAGRANT_CLOUD_TOKEN" \
   https://app.vagrantup.com/api/v1/box/$USERNAME/$BOX_NAME/version/$VERSION/providers \
   --data "{ \"provider\": { \"name\": \"$PROVIDER\" } }"
-  
+
 # Prepare the provider for upload/get an upload URL
 response=$(curl \
   --header "Authorization: Bearer $VAGRANT_CLOUD_TOKEN" \
@@ -84,5 +88,8 @@ curl $upload_path --request PUT --upload-file builds/$BOX_NAME.$PROVIDER.box > /
 # Release the version
 curl \
   --header "Authorization: Bearer $VAGRANT_CLOUD_TOKEN" \
-  https://app.vagrantup.com/api/v1/box/$USERNAME/$BOX_NAME/version/$VERSION/release \
+  https://app.vagrantup.com/api/v1/box/$USERNAME/$BOX_NAME/version/$BOX_VERSION/release \
   --request PUT
+
+# delete session dir
+rm -f -r "$SESSION_DIR"
