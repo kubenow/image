@@ -1,22 +1,16 @@
 #!/bin/bash
 set -e
 
-# export ATLAS_ORG=my org
-# export ATLAS_TOKEN= token is stored somewhere else:)
-
-USERNAME="kubenow"
 BOX_NAME="kubenow"
 BOX_VERSION="0.4.0b1"
 VERSION="$BOX_VERSION"
 BOX_BASENAME="$BOX_NAME-$BOX_VERSION"
 DISK_SIZE=214400
-VAGRANT_CLOUD_TOKEN="<your-vagrant-cloud-token>"
 PROVIDER="virtualbox"
+USERNAME="your-vagrant-cloud-username"
+VAGRANT_CLOUD_TOKEN="your-vagrant-cloud-token"
 
-# Install bento (for uploading)
-#gem install bento-ya
-
-# clone bento
+# clone bento-git-repo
 # checkout a speciffic master commit - in future change to release
 # but for now to long since a release
 if [ ! -d "bento" ]; then
