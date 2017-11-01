@@ -1,7 +1,5 @@
 #!/bin/sh -eux
 
-sudo su
-
 # Delete all Linux headers
 dpkg --list \
   | awk '{ print $2 }' \
