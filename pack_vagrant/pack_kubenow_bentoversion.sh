@@ -4,15 +4,14 @@ set -e
 # export ATLAS_ORG=my org
 # export ATLAS_TOKEN= token is stored somewhere else:)
 
-USERNAME=kubenow
+USERNAME="kubenow"
+BOX_NAME="kubenow"
 BOX_VERSION="0.4.0b1"
-BOX_BASENAME="kubenow"
+VERSION="$BOX_VERSION"
+BOX_BASENAME="$BOX_NAME-$BOX_VERSION"
 DISK_SIZE=214400
-VAGRANT_CLOUD_TOKEN=p91fyJ47fXzQUg.atlasv1.bArQXqPZ0UpM76RjKIARf3jfWOkyHCPdLVnHnaokO5X9LNRSByiiQSryQVladwDVaeA
-BOX_NAME=kubenow
-VERSION=0.4.0b1
-PROVIDER=virtualbox
-
+VAGRANT_CLOUD_TOKEN="<your-vagrant-cloud-token>"
+PROVIDER="virtualbox"
 
 # Install bento (for uploading)
 #gem install bento-ya
@@ -20,7 +19,9 @@ PROVIDER=virtualbox
 # clone bento
 # checkout a speciffic master commit - in future change to release
 # but for now to long since a release
-git clone https://github.com/chef/bento.git
+if [ ! -d "bento" ]; then
+  git clone https://github.com/chef/bento.git
+fi
 cd bento
 git checkout eef9780188056e4b87d5db3f7a1cabbe7c7f4706
 
@@ -35,11 +36,11 @@ REPLACE="$INSERT\n$FIND"
 sed "s#$FIND#$REPLACE#" ubuntu-16.04-amd64.json > kubenow.json
 
 # build it
-packer build --only=virtualbox-iso \
+packer build --only=hyperv-iso \
              --force \
              -var "box_basename=$BOX_BASENAME" \
-             -var "name=$BOX_BASENAME" \
-             -var "template=$BOX_BASENAME" \
+             -var "name=$BOX_NAME" \
+             -var "template=$BOX_NAME" \
              -var "version=$BOX_VERSION" \
              -var "disk_size=$DISK_SIZE" \
              -var "iso_checksum=737ae7041212c628de5751d15c3016058b0e833fdc32e7420209b76ca3d0a535" \
