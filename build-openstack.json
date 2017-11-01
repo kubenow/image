@@ -27,7 +27,11 @@
       },
       {
          "type":"shell",
-         "script":"{{pwd}}/requirements.sh"
+         "scripts": [
+           "{{pwd}}/requirements.sh",
+           "{{pwd}}/bin/cleanup.sh"
+         ]
+         
       }
    ],
    "post-processors":[
