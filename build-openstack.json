@@ -29,11 +29,5 @@
          "type":"shell",
          "script":"{{pwd}}/requirements.sh"
       }
-   ],
-   "post-processors":[
-      {
-         "type":"shell-local",
-         "script":"{{pwd}}/bin/os_pp.sh"
-      }
    ]
 }

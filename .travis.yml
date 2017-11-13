@@ -107,3 +107,11 @@ before_script:
 script:
   # Finally bulding the image with packer
   - travis_retry /tmp/packer build -force build-"$HOST_CLOUD".json
+  
+after_success:
+  # The below script used to be run as post-processor for the Openstack's builder.
+  # In order to avoid running Terraform within Packer, hence getting a cumbersome and tedious log output.
+  - >
+    if [ $HOST_CLOUD = 'openstack' ]; then
+        travis_retry bin/os_pp.sh
+    fi
