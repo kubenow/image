@@ -9,7 +9,7 @@ env:
     # Workaround to build on google - See https://github.com/travis-ci/travis-ci/issues/7940
     - BOTO_CONFIG=/dev/null
   matrix:
-    - HOST_CLOUD=gce
+    #- HOST_CLOUD=gce
     #- HOST_CLOUD=aws
     - HOST_CLOUD=openstack
     - HOST_CLOUD=azure
@@ -106,6 +106,16 @@ before_script:
       --project phenomenal-1145 -q
 
 script:
+  # Packer -force for Azure and Openstack does not automatically remove the artifacts from previous build.
+  - >
+    if [ "$HOST_CLOUD" = 'azure' ]; then
+        bin/clean_az_dupl.sh
+    elif [ "$HOST_CLOUD" = 'openstack' ]; then
+        bin/clean_os_dupl.sh
+    else
+        echo -e "Variable HOST_CLOUD not set\n"
+    fi
+
   # Finally bulding the image with packer
   - travis_retry /tmp/packer build -force build-"$HOST_CLOUD".json
   

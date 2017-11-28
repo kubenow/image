@@ -37,8 +37,5 @@ aws s3 cp "$kubenow_image_name".qcow2.md5 s3://kubenow-us-east-1 --region us-eas
 
 # Copy file to bucket in other aws region
 echo "Copying new image format into AWS S3 bucket: kubenow-us-central-1 ..."
-#aws s3 cp "s3://kubenow-us-east-1/$kubenow_image_name".qcow2 s3://kubenow-eu-central-1/ --region us-east-1 --region eu-central-1 --acl public-read
-#aws s3 cp "s3://kubenow-us-east-1/$kubenow_image_name".qcow2.md5 s3://kubenow-eu-central-1/ --region us-east-1 --region eu-central-1 --acl public-read
-# Sometimes it seems to fail cause s3://kubenow-us-east-1/$kubenow_image_name".qcow2 is not ready/available, it tooks some time
 aws s3 cp "$kubenow_image_name".qcow2 s3://kubenow-eu-central-1/ --region us-east-1 --region eu-central-1 --acl public-read
 aws s3 cp "$kubenow_image_name".qcow2.md5 s3://kubenow-eu-central-1/ --region us-east-1 --region eu-central-1 --acl public-read
