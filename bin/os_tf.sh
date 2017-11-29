@@ -32,10 +32,10 @@ md5sum "$kubenow_image_name".qcow2 > "$kubenow_image_name".qcow2.md5
 
 # Uploading the new image format to the AWS S3 bucket. Previous copy will be overwritten.
 echo "Uploading new image format into AWS S3 bucket: kubenow-us-east-1 ..."
-aws s3 cp "$kubenow_image_name".qcow2 s3://kubenow-us-east-1 --region us-east-1 --acl public-read
-aws s3 cp "$kubenow_image_name".qcow2.md5 s3://kubenow-us-east-1 --region us-east-1 --acl public-read
+aws s3 cp "$kubenow_image_name".qcow2 s3://kubenow-us-east-1 --region us-east-1 --acl public-read --quiet
+aws s3 cp "$kubenow_image_name".qcow2.md5 s3://kubenow-us-east-1 --region us-east-1 --acl public-read --quiet
 
 # Copy file to bucket in other aws region
 echo "Copying new image format into AWS S3 bucket: kubenow-us-central-1 ..."
-aws s3 cp "$kubenow_image_name".qcow2 s3://kubenow-eu-central-1/ --region us-east-1 --region eu-central-1 --acl public-read
-aws s3 cp "$kubenow_image_name".qcow2.md5 s3://kubenow-eu-central-1/ --region us-east-1 --region eu-central-1 --acl public-read
+aws s3 cp "$kubenow_image_name".qcow2 s3://kubenow-eu-central-1/ --region us-east-1 --region eu-central-1 --acl public-read --quiet
+aws s3 cp "$kubenow_image_name".qcow2.md5 s3://kubenow-eu-central-1/ --region us-east-1 --region eu-central-1 --acl public-read --quiet
