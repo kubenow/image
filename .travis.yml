@@ -107,7 +107,7 @@ before_script:
 script:
   # Finally bulding the image with packer
   - travis_retry /tmp/packer build -force build-"$HOST_CLOUD".json
-  
+
 after_success:
   # The below script used to be run as post-processor for the Openstack's builder.
   # In order to avoid running Terraform within Packer, hence getting a cumbersome and tedious log output.
@@ -120,13 +120,14 @@ notifications:
   email: false
   slack:
     secure: >
-      ed+rC8Oc4EdZfptHGX1Xr5sNc+wQTyjb4rjJT0P/U/NBStmik7dnUfAK9vk6XYVDrrPZxmAz6A
-      cJmEaxY4kdG2HBLBPD0keRxKh2rN2ZbjCTWuGlAomMkmNDcyeVoQI95HcT0nYHzgoUCGn7lgZ7
-      9vBUhBqbJXUWbvkz7J5qn8Kx7PXWvmjW4YLu9RhuIP7JtZLDLJt9dgyeHXDm1CW3tvPPplv9e8
-      l1GOcF2DBqodwd8+U5BTCNXf1DdwdvlmzIaZemy3sAsvNEr5wEIuO0Zw2cayhV80nf9fWW58ne
-      NBV2i8oeAuCL/M3EkEE/Z4aI/zxBVRyTaeK0s+XKehlC7IDJxnMirbNn2X4yyUeWY/81DX+Hhb
-      pip46TGQpS0sST8rBd7JYj0LjGSXj585xOcP67s9HdncnkVRdIdTOFX63m2bSE5tddJuOPggHZ
-      VKM8k+twXsWpW7sCr95wnwlD/ARuuG3OTtV0HfnHpqvKLdBgJ1fEsmKXn6eAaDvcCQ0K5LUBUs
-      yaZ9HHU7LYv7S760XgrmUEMR1SBsb9grFzANkAyhzApWQJ7wQbGD1IFX1kJl2v1Ii4WRgdVNll
-      YcMeflpHWPYI0U0IVXYPPLuV5DOEoKfWsJpX3HtZswYLdNzrZkSB9DQ/LxkSAZZcbkj9GLCv2E
-      igZHjgC3Ey2wwGIYQ=
+      UM/gwTYpOG+tT1dBsJei/WVHxt7pf0HH3TAMXsslZJpI4mAP1QsJNtaP81is1xk
+      Q0UaVr8qCFrJ1eUfr5Zjkd5ro1wpkX9dz5VSx/HHXoQZLZusGJ80o404XxT6Nuz
+      VyFzuAkuB4F8J7F4A/VP2t6F8UBO5e5S7x53rgwCb7IBsDewF40QdjOEtZxJmax
+      3u3ZXi4r1azt1nc0nRcTT+ZXYFxdhPpZBKibsNvnqn/VWX270ScUVW22u9X5j89
+      DBOHj8Z3P8iPoZ8iJluEawkyyOFVJlIreEvD1NxXWaoVsa9GGeCIKlBRDChTHHn
+      hL726DziwtJkQRM4twPoPi7FVJ5rXNSexiCha48dLQGCmS64ld3wyB4Oq+rigFd
+      G/ctIvcemPpKo7Yfdojh9+iPaw/3oZEWEpnqzPwQaHSXHjLgbDAvbHP7W103BsN
+      Z04Ql6hh/1dC7ZE5gSt03iAjkkDscM8YceLKZqMQWPU6PgpX0tqgOaaXtqwGNWh
+      cIJPNDWYX9oxvTx8w3CURfmtdNbicKgXnbTrlhUA7KGZKZ2DC0nL7+LHrspWyjj
+      hZL2YD6uHFpHF8BC26mwhwkxHMuDRQ46tPLSmggyi8LHBzkfd2MIMI62JfBrjMO
+      r/jaouha76M3Et2KL+QRG9zI8vexbtMO6n9cPpMeLVBlETFVAI25Q=
