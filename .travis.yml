@@ -107,7 +107,7 @@ before_script:
 script:
   # Finally bulding the image with packer
   - travis_retry /tmp/packer build -force build-"$HOST_CLOUD".json
-  
+
 after_success:
   # The below script used to be run as post-processor for the Openstack's builder.
   # In order to avoid running Terraform within Packer, hence getting a cumbersome and tedious log output.
@@ -115,3 +115,19 @@ after_success:
     if [ $HOST_CLOUD = 'openstack' ]; then
         travis_retry bin/os_pp.sh
     fi
+
+notifications:
+  email: false
+  slack:
+    secure: >
+      UM/gwTYpOG+tT1dBsJei/WVHxt7pf0HH3TAMXsslZJpI4mAP1QsJNtaP81is1xk
+      Q0UaVr8qCFrJ1eUfr5Zjkd5ro1wpkX9dz5VSx/HHXoQZLZusGJ80o404XxT6Nuz
+      VyFzuAkuB4F8J7F4A/VP2t6F8UBO5e5S7x53rgwCb7IBsDewF40QdjOEtZxJmax
+      3u3ZXi4r1azt1nc0nRcTT+ZXYFxdhPpZBKibsNvnqn/VWX270ScUVW22u9X5j89
+      DBOHj8Z3P8iPoZ8iJluEawkyyOFVJlIreEvD1NxXWaoVsa9GGeCIKlBRDChTHHn
+      hL726DziwtJkQRM4twPoPi7FVJ5rXNSexiCha48dLQGCmS64ld3wyB4Oq+rigFd
+      G/ctIvcemPpKo7Yfdojh9+iPaw/3oZEWEpnqzPwQaHSXHjLgbDAvbHP7W103BsN
+      Z04Ql6hh/1dC7ZE5gSt03iAjkkDscM8YceLKZqMQWPU6PgpX0tqgOaaXtqwGNWh
+      cIJPNDWYX9oxvTx8w3CURfmtdNbicKgXnbTrlhUA7KGZKZ2DC0nL7+LHrspWyjj
+      hZL2YD6uHFpHF8BC26mwhwkxHMuDRQ46tPLSmggyi8LHBzkfd2MIMI62JfBrjMO
+      r/jaouha76M3Et2KL+QRG9zI8vexbtMO6n9cPpMeLVBlETFVAI25Q=
