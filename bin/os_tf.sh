@@ -28,7 +28,7 @@ echo "Converting RAW image into QCOW2 format..."
 qemu-img convert -f qcow2 -O qcow2 -c -q "$kubenow_image_name" "$kubenow_image_name".qcow2
 
 # Generate md5sum of image
-md5sum "$kubenow_image_name".qcow2 > "$kubenow_image_name".qcow2.md5
+md5sum "$kubenow_image_name".qcow2 >"$kubenow_image_name".qcow2.md5
 
 # Uploading the new image format to the AWS S3 bucket. Previous copy will be overwritten.
 echo "Uploading new image format into AWS S3 bucket: kubenow-us-east-1 ..."
