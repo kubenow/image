@@ -1,11 +1,11 @@
-language: python
+language: go # Packer & Terraform
 
 sudo: required
 
 env:
   global:
     - TERRAFORM_VERSION=0.9.4
-    - PACKER_VERSION=1.0.0
+    - PACKER_VERSION=1.1.2
     # Workaround to build on google - See https://github.com/travis-ci/travis-ci/issues/7940
     - BOTO_CONFIG=/dev/null
   matrix:
@@ -85,7 +85,8 @@ install:
 before_script:
   # Get current_version, variable common to all three platforms
   - source ./bin/get_current_version.sh
-  - export IMAGE_NAME="$IMAGE_NAME""$CURRENT_VERSION"
+  - IMAGE_NAME="$IMAGE_NAME""$CURRENT_VERSION" && export IMAGE_NAME
+  - echo "Image Name is:" && echo $IMAGE_NAME
 
   # Common travis ssh directory for all providers
   - mkdir -p ~/.ssh/ && cp keys/id_rsa.pub ~/.ssh/id_rsa.pub
@@ -105,6 +106,16 @@ before_script:
       --project phenomenal-1145 -q
 
 script:
+  # Packer -force for Azure and Openstack does not automatically remove the artifacts from previous build.
+  - >
+    if [ "$HOST_CLOUD" = 'azure' ]; then
+        bin/clean_az_dupl.sh
+    elif [ "$HOST_CLOUD" = 'openstack' ]; then
+        bin/clean_os_dupl.sh
+    else
+        echo -e "Variable HOST_CLOUD not set\n"
+    fi
+
   # Finally bulding the image with packer
   - travis_retry /tmp/packer build -force build-"$HOST_CLOUD".json
 
@@ -113,7 +124,8 @@ after_success:
   # In order to avoid running Terraform within Packer, hence getting a cumbersome and tedious log output.
   - >
     if [ $HOST_CLOUD = 'openstack' ]; then
-        travis_retry bin/os_pp.sh
+        #travis_retry bin/os_pp.sh
+        bin/os_pp.sh
     fi
 
 notifications:
