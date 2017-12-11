@@ -61,13 +61,14 @@ export OS_EXTERNAL_NET_UUUID=$OS_EXTERNAL_NET_UUUID
 export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
 export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
 export AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION
-" >> /tmp/aws_and_os.sh
+" >>/tmp/aws_and_os.sh
 
 # Launching OS instance with terraform
-/tmp/terraform apply ; TF_STATUS="$?"
+/tmp/terraform apply
+TF_STATUS="$?"
 
 # Destroying OS instance with terraform
 /tmp/terraform destroy -force
 
-# Return code for Packer since this is a post-processor. This way if something goes wrong with terraform apply, then Packer knows is and will make the overall image building failing 
+# Return code for Packer since this is a post-processor. This way if something goes wrong with terraform apply, then Packer knows is and will make the overall image building failing
 exit $TF_STATUS

@@ -1,6 +1,10 @@
-language: go # Packer & Terraform
+---
+language: python # need for pip
 
 sudo: required
+
+services:
+  - docker
 
 env:
   global:
@@ -8,6 +12,8 @@ env:
     - PACKER_VERSION=1.1.2
     # Workaround to build on google - See https://github.com/travis-ci/travis-ci/issues/7940
     - BOTO_CONFIG=/dev/null
+    - ANSIBLE_LINT_VERSION=3.4.15
+    - YAMLLINT_VERSION=1.8.1
   matrix:
     - HOST_CLOUD=gce
     - HOST_CLOUD=aws
@@ -39,21 +45,30 @@ before_install:
   - ssh-add keys/id_rsa
 
   # CHECK CODE QUALITY
-  # Installing Terraform and check with fmt command
+  # Installing tools
   - >
       travis_retry curl
       https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
       > /tmp/terraform.zip
   - unzip /tmp/terraform.zip -d /tmp/
-  - /tmp/terraform fmt bin/os_main.tf
-  - git diff --exit-code # this will fail if terraform changed something
+  - sudo pip install --upgrade pip
+  - sudo pip install yamllint=="${YAMLLINT_VERSION}"
+
+  # Check Terraform
+  - /tmp/terraform fmt bin/*.tf
+  - git diff --exit-code
 
   # Check Json
   - echo "$(python -mjson.tool < $HOST_CLOUD.json)" > "$HOST_CLOUD".json
   - git diff --exit-code
 
-  # check Shell
+  # Check Shell
   - shellcheck $(find . -type f -name "*.sh")
+  - docker run -v "$(pwd)":/sh -w /sh jamesmstone/shfmt -i 2 -w bin/*.sh
+  - git diff --exit-code
+
+  # Check YAML
+  - yamllint -c .yamllint.yml -s .travis.yml .yamllint.yml
 
 install:
   # INSTALL DEPS
