@@ -26,20 +26,20 @@ export TF_VAR_current_version=$CURRENT_VERSION
 export TF_VAR_kubenow_image_name=$IMAGE_NAME
 
 # Parsing KubeNow image ID of newly crated one.
-IMAGE_ID=$(glance image-list | grep "\skubenow-$CURRENT_VERSION\s")
+image_id=$(glance image-list | grep "\skubenow-$CURRENT_VERSION\s")
 
 # Just doing some text manipulation so to obtain a plain string, no spaces, no tab signs
-IMAGE_ID=$(echo "$IMAGE_ID" | sed "s/| //;s/ | .*$//g")
-export TF_VAR_kubenow_image_id=$IMAGE_ID
+image_id=$(echo "$image_id" | sed "s/| //;s/ | .*$//g")
+export TF_VAR_kubenow_image_id=$image_id
 
 # Parsing some needed values for spawning Openstack instance with terraform
-OS_IMAGE_ID=$(glance image-list | grep "Ubuntu 16.04 Xenial Xerus")
-OS_IMAGE_ID=$(echo "$OS_IMAGE_ID" | sed "s/| //;s/ | .*$//g")
-export TF_VAR_os_image_id=$OS_IMAGE_ID
+os_image_id=$(glance image-list | grep "Ubuntu 16.04 Xenial Xerus")
+os_image_id=$(echo "$os_image_id" | sed "s/| //;s/ | .*$//g")
+export TF_VAR_os_image_id=$os_image_id
 
-NETWORK_ID=$(neutron net-list | grep -i "default")
-NETWORK_ID=$(echo "$NETWORK_ID" | sed "s/| //;s/ | .*$//g")
-export TF_VAR_network_id=$NETWORK_ID
+network_id=$(neutron net-list | grep -i "default")
+network_id=$(echo "$network_id" | sed "s/| //;s/ | .*$//g")
+export TF_VAR_network_id=$network_id
 
 # Creating a credetianl file which will be provisioned via Terraform to an OS instance
 echo -e "
