@@ -9,7 +9,8 @@ sudo apt-get install -y \
   apt-transport-https \
   ca-certificates \
   software-properties-common \
-  curl
+  curl \
+  unattended-upgrades
 
 echo "Add Kubernetes repo..."
 sudo sh -c 'curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -'
