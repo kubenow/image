@@ -2,8 +2,9 @@
 # This Script will be executed as post-processor of the Openstack packer builder. It builds a OS instance with Terraform
 
 # Installing needed tools
-pip install --upgrade pip
-pip install python-glanceclient python-neutronclient
+# NB: this bash script run in travis where sudo is required. Thus we must put sudo before the usual pip command
+sudo pip install --upgrade pip
+sudo pip install python-glanceclient python-neutronclient
 
 # Building the OS Instance
 cd ./bin || exit
@@ -25,20 +26,20 @@ export TF_VAR_current_version=$CURRENT_VERSION
 export TF_VAR_kubenow_image_name=$IMAGE_NAME
 
 # Parsing KubeNow image ID of newly crated one.
-IMAGE_ID=$(glance image-list | grep "\skubenow-$CURRENT_VERSION\s")
+image_id=$(glance image-list | grep "\skubenow-$CURRENT_VERSION\s")
 
 # Just doing some text manipulation so to obtain a plain string, no spaces, no tab signs
-IMAGE_ID=$(echo "$IMAGE_ID" | sed "s/| //;s/ | .*$//g")
-export TF_VAR_kubenow_image_id=$IMAGE_ID
+image_id=$(echo "$image_id" | sed "s/| //;s/ | .*$//g")
+export TF_VAR_kubenow_image_id=$image_id
 
 # Parsing some needed values for spawning Openstack instance with terraform
-OS_IMAGE_ID=$(glance image-list | grep "Ubuntu 16.04 Xenial Xerus")
-OS_IMAGE_ID=$(echo "$OS_IMAGE_ID" | sed "s/| //;s/ | .*$//g")
-export TF_VAR_os_image_id=$OS_IMAGE_ID
+os_image_id=$(glance image-list | grep "Ubuntu 16.04 Xenial Xerus")
+os_image_id=$(echo "$os_image_id" | sed "s/| //;s/ | .*$//g")
+export TF_VAR_os_image_id=$os_image_id
 
-NETWORK_ID=$(neutron net-list | grep -i "default")
-NETWORK_ID=$(echo "$NETWORK_ID" | sed "s/| //;s/ | .*$//g")
-export TF_VAR_network_id=$NETWORK_ID
+network_id=$(neutron net-list | grep -i "default")
+network_id=$(echo "$network_id" | sed "s/| //;s/ | .*$//g")
+export TF_VAR_network_id=$network_id
 
 # Creating a credetianl file which will be provisioned via Terraform to an OS instance
 echo -e "
@@ -60,13 +61,14 @@ export OS_EXTERNAL_NET_UUUID=$OS_EXTERNAL_NET_UUUID
 export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
 export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
 export AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION
-" >> /tmp/aws_and_os.sh
+" >>/tmp/aws_and_os.sh
 
 # Launching OS instance with terraform
-/tmp/terraform apply ; TF_STATUS="$?"
+/tmp/terraform apply
+TF_STATUS="$?"
 
 # Destroying OS instance with terraform
 /tmp/terraform destroy -force
 
-# Return code for Packer since this is a post-processor. This way if something goes wrong with terraform apply, then Packer knows is and will make the overall image building failing 
+# Return code for Packer since this is a post-processor. This way if something goes wrong with terraform apply, then Packer knows is and will make the overall image building failing
 exit $TF_STATUS
