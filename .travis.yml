@@ -9,10 +9,10 @@ env:
     # Workaround to build on google - See https://github.com/travis-ci/travis-ci/issues/7940
     - BOTO_CONFIG=/dev/null
   matrix:
-    #- HOST_CLOUD=gce
-    #- HOST_CLOUD=aws
+    - HOST_CLOUD=gce
+    - HOST_CLOUD=aws
     - HOST_CLOUD=openstack
-    #- HOST_CLOUD=azure
+    - HOST_CLOUD=azure
 
 addons:
   apt:
@@ -115,4 +115,4 @@ before_script:
 
 script:
   # Finally bulding the image with packer
-  - travis_retry travis_wait /tmp/packer build -force build-"$HOST_CLOUD".json
+  - travis_retry /tmp/packer build -force build-"$HOST_CLOUD".json
