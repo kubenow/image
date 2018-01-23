@@ -72,7 +72,7 @@ echo "Pulling required Docker images..."
 kube_version="v1.9.2"
 kube_dns_version="1.14.5"
 etcd_version="3.1.11"
-flannel_version="v0.9.0"
+flannel_version="v0.9.1"
 sudo docker pull gcr.io/google_containers/kube-apiserver-amd64:$kube_version
 sudo docker pull gcr.io/google_containers/kube-proxy-amd64:$kube_version
 sudo docker pull gcr.io/google_containers/kube-controller-manager-amd64:$kube_version
