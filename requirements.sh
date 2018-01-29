@@ -35,11 +35,11 @@ sudo DEBIAN_FRONTEND=noninteractive \
 
 echo "Installing Kubernetes requirements..."
 sudo apt-get install -y \
-  docker-engine=1.12.5-0~ubuntu-xenial \
-  kubernetes-cni=0.5.1-00 \
-  kubeadm=1.7.5-00 \
-  kubelet=1.7.5-00 \
-  kubectl=1.7.5-00
+  docker-engine=1.13.1-0~ubuntu-xenial \
+  kubernetes-cni=0.6.0-00 \
+  kubeadm=1.9.2-00 \
+  kubelet=1.9.2-00 \
+  kubectl=1.9.2-00
 
 echo "Installing other requirements..."
 # APT requirements
@@ -69,10 +69,10 @@ echo "Pulling required Docker images..."
 # Essential Kubernetes containers are listed in following files:
 # https://github.com/kubernetes/kubernetes/blob/master/cmd/kubeadm/app/constants/constants.go (etcd-version)
 # https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/dns/kubedns-controller.yaml.base (kube-dns-version)
-kube_version="v1.7.5"
+kube_version="v1.9.2"
 kube_dns_version="1.14.5"
-etcd_version="3.0.17"
-flannel_version="v0.9.0"
+etcd_version="3.1.11"
+flannel_version="v0.9.1"
 sudo docker pull gcr.io/google_containers/kube-apiserver-amd64:$kube_version
 sudo docker pull gcr.io/google_containers/kube-proxy-amd64:$kube_version
 sudo docker pull gcr.io/google_containers/kube-controller-manager-amd64:$kube_version
