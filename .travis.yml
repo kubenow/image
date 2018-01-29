@@ -64,7 +64,7 @@ before_install:
 
   # Check Shell
   - shellcheck $(find . -type f -name "*.sh")
-  # - docker run -v "$(pwd)":/sh -w /sh jamesmstone/shfmt -i 2 -w bin/*.sh
+  - docker run -v "$(pwd)":/sh -w /sh jamesmstone/shfmt -i 2 -w bin/*.sh
   - git diff --exit-code
 
   # Check YAML
