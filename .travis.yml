@@ -15,10 +15,10 @@ env:
     - ANSIBLE_LINT_VERSION=3.4.15
     - YAMLLINT_VERSION=1.8.1
   matrix:
-    - HOST_CLOUD=gce
-    - HOST_CLOUD=aws
+    # - HOST_CLOUD=gce
+    # - HOST_CLOUD=aws
     - HOST_CLOUD=openstack
-    - HOST_CLOUD=azure
+    # - HOST_CLOUD=azure
 
 addons:
   apt:
@@ -94,7 +94,7 @@ install:
       sudo apt-key add -
 
   # Update the package list and install the Cloud SDK
-  - sudo apt-get update
+  - sudo apt-get -qq update
   - sudo apt-get install google-cloud-sdk -y
 
 before_script:
@@ -130,14 +130,14 @@ script:
     else
         echo -e "Variable HOST_CLOUD not set\n"
     fi
-  
+
   # Check whether this build was triggered by our cron job for security-updates
-  # Forcing Travis to think that this was a cron job (only for testing)
-  # - export TRAVIS_EVENT_TYPE="cron"
+  - TRAVIS_EVENT_TYPE="cron" && export TRAVIS_EVENT_TYPE
+  - echo "TRAVIS_EVENT_TYPE is:" && echo $TRAVIS_EVENT_TYPE
   - >
-    if ["$TRAVIS_EVENT_TYPE" = 'cron']; then
+    if [ "$TRAVIS_EVENT_TYPE" = 'cron' ]; then
         echo -e "Travis built triggered via configured cron job.\n"
-        bin/cron_script.sh
+        source bin/cron_script.sh
     fi
 
   # Finally bulding the image with packer
@@ -148,7 +148,9 @@ after_success:
   # In order to avoid running Terraform within Packer, hence getting a cumbersome and tedious log output.
   - >
     if [ $HOST_CLOUD = 'openstack' ]; then
-        travis_retry bin/os_pp.sh
+        # travis_retry bin/os_pp.sh
+        echo "Just a printf for testing"
+        echo $OS_SOURCE_IMAGE_NAME
     fi
 
 notifications:
