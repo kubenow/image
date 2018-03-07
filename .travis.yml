@@ -130,6 +130,15 @@ script:
     else
         echo -e "Variable HOST_CLOUD not set\n"
     fi
+  
+  # Check whether this build was triggered by our cron job for security-updates
+  # Forcing Travis to think that this was a cron job (only for testing)
+  # - export TRAVIS_EVENT_TYPE="cron"
+  - >
+    if ["$TRAVIS_EVENT_TYPE" = 'cron']; then
+        echo -e "Travis built triggered via configured cron job.\n"
+        bin/cron_script.sh
+    fi
 
   # Finally bulding the image with packer
   - travis_retry /tmp/packer build -force build-"$HOST_CLOUD".json
@@ -139,8 +148,7 @@ after_success:
   # In order to avoid running Terraform within Packer, hence getting a cumbersome and tedious log output.
   - >
     if [ $HOST_CLOUD = 'openstack' ]; then
-        #travis_retry bin/os_pp.sh
-        bin/os_pp.sh
+        travis_retry bin/os_pp.sh
     fi
 
 notifications:

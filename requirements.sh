@@ -9,8 +9,7 @@ sudo apt-get install -y \
   apt-transport-https \
   ca-certificates \
   software-properties-common \
-  curl \
-  unattended-upgrades
+  curl
 
 echo "Add Kubernetes repo..."
 sudo sh -c 'curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -'
@@ -83,3 +82,6 @@ sudo docker pull gcr.io/google_containers/k8s-dns-sidecar-amd64:$kube_dns_versio
 sudo docker pull gcr.io/google_containers/k8s-dns-kube-dns-amd64:$kube_dns_version
 sudo docker pull gcr.io/google_containers/k8s-dns-dnsmasq-nanny-amd64:$kube_dns_version
 sudo docker pull quay.io/coreos/flannel:$flannel_version-amd64
+
+# After having installed all the necessary packages, we check whether there are related security-updates
+sudo apt-get update -y && sudo unattended-upgrades -d
