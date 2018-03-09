@@ -27,13 +27,10 @@ if [ "$HOST_CLOUD" = 'aws' ]; then
     echo -e "Kubenow latest stable ami ID is: $kubenow_latest_amiId .\n"
     export AWS_SOURCE_IMAGE_ID="$kubenow_latest_amiId"
     echo -e "AWS Source Image ID is: $AWS_SOURCE_IMAGE_ID\n"
-
   else
     echo -e "No AWS images named kubenow-v$SUPPORTED_STABLE_TAG have been found.\nInterrupting building.\n"
     exit 1
-
   fi
-
 elif [ "$HOST_CLOUD" = 'azure' ]; then
   echo -e "Running Azure Packer builder...\n"
 
@@ -50,23 +47,16 @@ elif [ "$HOST_CLOUD" = 'azure' ]; then
 
   # Finally, inserting image_url attribute in build-azure.json
   sed -i -e '/os_type/a \         "image_url": "'"$kn_vhd_url"'", ' build-azure.json
-
 elif [ "$HOST_CLOUD" = 'gce' ]; then
   echo -e "Running GCE Packer builder...\n"
   export GCE_SOURCE_IMAGE_NAME="kubenow-v$SUPPORTED_STABLE_TAG"
-
 elif [ "$HOST_CLOUD" = 'openstack' ]; then
   echo -e "Running Openstack Packer builder...\n"
   export OS_SOURCE_IMAGE_NAME="kubenow-v$SUPPORTED_STABLE_TAG"
-
 else
   echo -e "Variable HOST_CLOUD is NOT set to one of the following values: aws, azure, gce, openstack .\n"
-
 fi
 
 # Last but not least, replacing the script attribute in the provisioner section to a different value than default one (i.e. requirements.sh)
 # Given that we are starting from a stable kubenow image, we do not want to reinstall the requirements, rather to perform security updates
 sed -i -e 's|requirements.sh|bin/get_security_updates.sh|g' build-"$HOST_CLOUD".json
-
-# Displaying the builder json (mainly as a visual test, can be removed if output too verbose in .travis.yaml)
-# cat build-"$HOST_CLOUD".json
