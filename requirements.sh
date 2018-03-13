@@ -4,13 +4,12 @@
 set -e
 
 echo "Ensure that APT works with HTTPS..."
-sudo apt-get update -y
-sudo apt-get install -y \
+sudo apt-get -qq update -y
+sudo apt-get -qq install -y \
   apt-transport-https \
   ca-certificates \
   software-properties-common \
-  curl \
-  unattended-upgrades
+  curl
 
 echo "Add Kubernetes repo..."
 sudo sh -c 'curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -'
@@ -26,7 +25,7 @@ echo "Add GlusterFS repo..."
 sudo add-apt-repository -y ppa:gluster/glusterfs-3.12
 
 echo "Updating Ubuntu..."
-sudo apt-get update -y
+sudo apt-get -qq update -y
 sudo DEBIAN_FRONTEND=noninteractive \
   apt-get -y \
   -o Dpkg::Options::="--force-confdef" \
@@ -83,3 +82,6 @@ sudo docker pull gcr.io/google_containers/k8s-dns-sidecar-amd64:$kube_dns_versio
 sudo docker pull gcr.io/google_containers/k8s-dns-kube-dns-amd64:$kube_dns_version
 sudo docker pull gcr.io/google_containers/k8s-dns-dnsmasq-nanny-amd64:$kube_dns_version
 sudo docker pull quay.io/coreos/flannel:$flannel_version-amd64
+
+# After having installed all the necessary packages, we check whether there are related security-updates
+sudo apt-get -qq update -y && sudo unattended-upgrades -d
