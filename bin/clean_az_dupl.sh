@@ -1,35 +1,36 @@
 #!/usr/bin/env bash
 
-# Related to bug fix: https://bugs.launchpad.net/ubuntu/+source/dpkg/+bug/1730627
-sudo aptitude upgrade dpkg -y
-
-# Installing Azure command-line client
-echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ wheezy main" | sudo tee /etc/apt/sources.list.d/azure-cli.list
-
-sudo apt-key adv --keyserver packages.microsoft.com --recv-keys 52E16F86FEE04B979B07E28DB02C46DF417A0893
-sudo apt-get -qq install apt-transport-https -y
-sudo apt-get -qq update && sudo apt-get install azure-cli -y
-
 # Exit immediately if a command exits with a non-zero status
-# Usually this is set at the beginning of the script. But due to bug:
-# https://bugs.launchpad.net/ubuntu/+source/dpkg/+bug/1730627
-# this need to be temporarily displaced
 set -e
 
 #Azure
 CMD_OUTPUT_FMT="table"
 
+# Performing Login (azure-cli is already installed in .travis.yml)
 echo -e "AZURE:\n-----"
-az login --service-principal \
-  -u "$AZURE_CLIENT_ID" \
-  -p "$AZURE_CLIENT_SECRET" \
-  --tenant "$AZURE_TENANT_ID" \
-  --output "$CMD_OUTPUT_FMT"
+az login --service-principal -u "$AZURE_CLIENT_ID" -p "$AZURE_CLIENT_SECRET" --tenant "$AZURE_TENANT_ID" --output "$CMD_OUTPUT_FMT"
 
 echo -e "-----------  -----------  ---------------------------  -------  ------------------------------------\n"
 echo -e "Check if $IMAGE_NAME already exists:\n"
-# Extracting KubeNow images that are flagged as $IMAGE_NAME
-az storage blob list --account-name "$AZURE_STORAGE_ACCOUNT" --container-name "$AZURE_CONTAINER_NAME" --query [].name --output tsv | grep "$IMAGE_NAME" | grep '.vhd' | tee /tmp/az_out_images.txt
+
+# Extracting id of the last successful built artificat. Useful later when we need to
+# evaluate if there are any duplicates. If so, then all namesake ones with a different id will be annihilated
+artifact_id=$(grep "OSDiskUri:" </tmp/pckr_build_log.txt | awk -F "/" '{print $NF}')
+echo -e "ID of the latest successfull built artifact is: $artifact_id\n"
+
+# This part is necessary to then list and identify the right namesake duplicates
+if [ "$TRAVIS_EVENT_TYPE" = 'cron' ]; then
+  # Then it means that we are working with stable release. That is: v040, v050, vXXX etc...
+  # So we need to slightly modify the regexp for the next grep, otherwise a stable will also
+  # match a test or a current.
+  reg_expr="$IMAGE_NAME[^-abcr]"
+else
+  reg_expr="$IMAGE_NAME"
+fi
+
+# Extracting KubeNow images that are flagged as $IMAGE_NAME if any
+echo -e "Listing any potential duplicates for $IMAGE_NAME...\n"
+az storage blob list --account-name "$AZURE_STORAGE_ACCOUNT" --container-name "$AZURE_CONTAINER_NAME" --query [].name --output tsv | grep "$reg_expr" | grep '.vhd' | tee /tmp/az_out_images.txt
 
 tot_no_images=$(wc -l </tmp/az_out_images.txt)
 counter_del_img=0
@@ -40,24 +41,26 @@ if [ "$tot_no_images" -gt "0" ]; then
 
   # Going through found duplicates in order to delete them
   while read -r line; do
-    name=$(echo "$line" | grep "$IMAGE_NAME")
+    id_to_delete=$(echo "$line" | awk -F "/" '{print $NF}')
 
-    # Because of files' names convention between a vhd file and its related vmTemplate json
-    rel_json_blob="${line/osDisk/vmTemplate}"
-    rel_json_blob="${rel_json_blob/.vhd/.json}"
+    if [ "$id_to_delete" != "$artifact_id" ]; then
+      # Because of files' names convention between a vhd file and its related vmTemplate json
+      rel_json_blob="${line/osDisk/vmTemplate}"
+      rel_json_blob="${rel_json_blob/.vhd/.json}"
 
-    # Deleting old KubeNow Image
-    echo -e "Starting to delete duplicate KubeNow image: $name\n"
-    az storage blob delete --account-name "$AZURE_STORAGE_ACCOUNT" -c "$AZURE_CONTAINER_NAME" -n "$line"
+      # Deleting old KubeNow Image
+      echo -e "Starting to delete duplicate KubeNow image: $IMAGE_NAME\n"
+      az storage blob delete --account-name "$AZURE_STORAGE_ACCOUNT" -c "$AZURE_CONTAINER_NAME" -n "$line"
 
-    # If related json blob does not exist, then will simply skip this step. Otherwise it must be deleted as well
-    if [ -n "$rel_json_blob" ]; then
-      az storage blob delete --account-name "$AZURE_STORAGE_ACCOUNT" -c "$AZURE_CONTAINER_NAME" -n "$rel_json_blob"
-      echo -e "Starting to delete related json blob: $rel_json_blob\n"
+      # If related json blob does not exist, then will simply skip this step. Otherwise it must be deleted as well
+      if [ -n "$rel_json_blob" ]; then
+        az storage blob delete --account-name "$AZURE_STORAGE_ACCOUNT" -c "$AZURE_CONTAINER_NAME" -n "$rel_json_blob"
+        echo -e "Starting to delete related json blob: $rel_json_blob\n"
+      fi
+
+      counter_del_img=$((counter_del_img + 1))
+      echo -e "Keep looking for any other duplicate image...\n\n"
     fi
-
-    counter_del_img=$((counter_del_img + 1))
-    echo -e "Keep looking for any other duplicate image...\n\n"
   done </tmp/az_out_images.txt
 else
   echo -e "No KubeNow images named $IMAGE_NAME were found."

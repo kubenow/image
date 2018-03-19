@@ -14,8 +14,8 @@ sudo sed -i /etc/hosts -e "s/^127.0.0.1 localhost$/127.0.0.1 localhost $(hostnam
 
 # Install Tools
 # NOTE: Reason why here I am installing glance via apt instead of pip it's because I am running a different version of Ubuntu compared to the Travis' one
-sudo apt-get update
-sudo apt-get install python-glanceclient awscli qemu-utils -y
+sudo apt-get -qq update
+sudo apt-get -qq install python-glanceclient awscli qemu-utils -y
 
 # Donwloading newly created KubeNow from OS
 echo "Downloading KubeNow image from Openstack..."
