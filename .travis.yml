@@ -44,9 +44,9 @@ before_install:
       https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
       > /tmp/terraform.zip
   - unzip /tmp/terraform.zip -d /tmp/
-  - sudo pip install --upgrade pip
-  - sudo pip install yamllint=="${YAMLLINT_VERSION}"
-  - sudo apt-get -qq install shellcheck
+  - sudo pip install --upgrade -qq pip
+  - sudo pip install -qq yamllint=="${YAMLLINT_VERSION}"
+  - sudo apt-get -qq install shellcheck -y
 
   # Check Terraform
   - /tmp/terraform fmt bin/*.tf
@@ -99,6 +99,8 @@ install:
 
 before_script:
   # Check whether this build was triggered by our cron job for security-updates
+  # Note: in a yml file there seems to not be possible to have a space
+  # before a global variable within an echo string
   - echo "TRAVIS_EVENT_TYPE is:$TRAVIS_EVENT_TYPE"
   - >
     if [ "$TRAVIS_EVENT_TYPE" = 'cron' ]; then
@@ -119,14 +121,8 @@ before_script:
 
   # GCE login
   - echo $GCE_KEY > ./bin/account_file.json
-
-  - >
-      gcloud auth activate-service-account
-      12202776487-compute@developer.gserviceaccount.com
-      --key-file=$GCE_ACCOUNT_FILE_PATH
-  - >
-      gcloud auth login 12202776487-compute@developer.gserviceaccount.com
-      --project phenomenal-1145 -q
+  - gcloud auth activate-service-account 12202776487-compute@developer.gserviceaccount.com --key-file=$GCE_ACCOUNT_FILE_PATH
+  - gcloud auth login 12202776487-compute@developer.gserviceaccount.com --project phenomenal-1145 -q
 
 script:
   # Finally bulding the image with packer
@@ -146,10 +142,10 @@ after_success:
     fi
 
   # The below script used to be run as post-processor for the Openstack's builder.
-  # In order to avoid running Terraform within Packer, hence getting a cumbersome and tedious log output. travis_retry
+  # In order to avoid running Terraform within Packer, hence getting a cumbersome and tedious log output.
   - >
     if [ $HOST_CLOUD = 'openstack' ]; then
-        bin/os_pp.sh
+        travis_retry bin/os_pp.sh
     fi
 
 notifications:

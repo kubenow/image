@@ -33,7 +33,7 @@ sudo DEBIAN_FRONTEND=noninteractive \
   upgrade
 
 echo "Installing Kubernetes requirements..."
-sudo apt-get install -y \
+sudo apt-get -qq install -y \
   docker-engine=1.13.1-0~ubuntu-xenial \
   kubernetes-cni=0.6.0-00 \
   kubeadm=1.9.2-00 \
@@ -42,7 +42,7 @@ sudo apt-get install -y \
 
 echo "Installing other requirements..."
 # APT requirements
-sudo apt-get install -y \
+sudo apt-get -qq install -y \
   python \
   daemon \
   attr \

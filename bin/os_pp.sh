@@ -3,8 +3,8 @@
 
 # Installing needed tools
 # NB: this bash script run in travis where sudo is required. Thus we must put sudo before the usual pip command
-sudo pip install --upgrade pip
-sudo pip install python-glanceclient python-neutronclient
+sudo pip install --upgrade -qq pip
+sudo pip install -qq python-glanceclient python-neutronclient
 
 # Building the OS Instance
 cd ./bin || exit
@@ -57,10 +57,12 @@ export OS_TENANT_NAME=$OS_TENANT_NAME
 export OS_AUTH_VERSION=3
 export OS_POOL_NAME=$OS_POOL_NAME
 export OS_EXTERNAL_NET_UUUID=$OS_EXTERNAL_NET_UUUID
-# AWS credentials
+# AWS credentials and Buckets URLs
 export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
 export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
 export AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION
+export AWS_BUCKET1_URL=$AWS_BUCKET1_URL
+export AWS_BUCKET2_URL=$AWS_BUCKET2_URL
 " >>/tmp/aws_and_os.sh
 
 # Launching OS instance with terraform
