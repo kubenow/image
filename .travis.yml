@@ -20,13 +20,6 @@ env:
     - HOST_CLOUD=openstack
     - HOST_CLOUD=azure
 
-addons:
-  apt:
-    sources:
-      - debian-sid
-    packages:
-      - shellcheck # code review tool for bash script
-
 before_install:
   # Decrypt secrets
   - >
@@ -45,7 +38,7 @@ before_install:
   - ssh-add keys/id_rsa
 
   # CHECK CODE QUALITY
-  # Installing tools
+  # Installing code review tools
   - >
       travis_retry curl
       https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
@@ -53,6 +46,7 @@ before_install:
   - unzip /tmp/terraform.zip -d /tmp/
   - sudo pip install --upgrade pip
   - sudo pip install yamllint=="${YAMLLINT_VERSION}"
+  - sudo apt-get -qq install shellcheck
 
   # Check Terraform
   - /tmp/terraform fmt bin/*.tf
@@ -95,13 +89,27 @@ install:
 
   # Update the package list and install the Cloud SDK
   - sudo apt-get -qq update
-  - sudo apt-get install google-cloud-sdk -y
+  - sudo apt-get -qq install google-cloud-sdk -y
+
+  # Installing Azure command-line client here as used both in cleaning and cron_job scripts
+  - echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ wheezy main" | sudo tee /etc/apt/sources.list.d/azure-cli.list
+  - sudo apt-key adv --keyserver packages.microsoft.com --recv-keys 52E16F86FEE04B979B07E28DB02C46DF417A0893
+  - sudo apt-get -qq install apt-transport-https -y
+  - sudo apt-get -qq update && sudo apt-get -qq install azure-cli -y
 
 before_script:
-  # Get current_version, variable common to all three platforms
-  - source ./bin/get_current_version.sh
+  # Check whether this build was triggered by our cron job for security-updates
+  - echo "TRAVIS_EVENT_TYPE is:$TRAVIS_EVENT_TYPE"
+  - >
+    if [ "$TRAVIS_EVENT_TYPE" = 'cron' ]; then
+        echo "Travis built triggered via configured cron job"
+        source bin/cron_script.sh
+    else
+        # Get current_version, variable common to all three platforms
+        source ./bin/get_current_version.sh
+    fi
   - IMAGE_NAME="$IMAGE_NAME""$CURRENT_VERSION" && export IMAGE_NAME
-  - echo "Image Name is:" && echo $IMAGE_NAME
+  - echo "Image Name is:$IMAGE_NAME"
 
   # Common travis ssh directory for all providers
   - mkdir -p ~/.ssh/ && cp keys/id_rsa.pub ~/.ssh/id_rsa.pub
@@ -121,33 +129,27 @@ before_script:
       --project phenomenal-1145 -q
 
 script:
-  # Packer -force for Azure and Openstack does not automatically remove the artifacts from previous build.
+  # Finally bulding the image with packer
+  - travis_retry /tmp/packer build -force build-"$HOST_CLOUD".json | tee /tmp/pckr_build_log.txt
+
+after_success:
+  # Azure and Openstack packer builder do not automatically remove namesake artifacts from previous builds.
+  # They allows two image with same names, but different unique IDs, even with packer flag --force
+  # Thus after creation of either a new or an updated kubenow image, we will remove previous old ones
   - >
     if [ "$HOST_CLOUD" = 'azure' ]; then
         bin/clean_az_dupl.sh
     elif [ "$HOST_CLOUD" = 'openstack' ]; then
         bin/clean_os_dupl.sh
     else
-        echo "Variable HOST_CLOUD not set."
+        echo "HOST_CLOUD is NOT set to one of the following values:aws, azure, gce, openstack."
     fi
 
-  # Check whether this build was triggered by our cron job for security-updates
-  - echo "TRAVIS_EVENT_TYPE is:$TRAVIS_EVENT_TYPE"
-  - >
-    if [ "$TRAVIS_EVENT_TYPE" = 'cron' ]; then
-        echo "Travis built triggered via configured cron job"
-        source bin/cron_script.sh
-    fi
-
-  # Finally bulding the image with packer
-  - travis_retry /tmp/packer build -force build-"$HOST_CLOUD".json
-
-after_success:
   # The below script used to be run as post-processor for the Openstack's builder.
-  # In order to avoid running Terraform within Packer, hence getting a cumbersome and tedious log output.
+  # In order to avoid running Terraform within Packer, hence getting a cumbersome and tedious log output. travis_retry
   - >
     if [ $HOST_CLOUD = 'openstack' ]; then
-        travis_retry bin/os_pp.sh
+        bin/os_pp.sh
     fi
 
 notifications:
