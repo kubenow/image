@@ -32,10 +32,12 @@ md5sum "$kubenow_image_name".qcow2 >"$kubenow_image_name".qcow2.md5
 
 # Uploading the new image format to the AWS S3 bucket. Previous copy will be overwritten.
 echo "Uploading new image format into AWS S3 bucket: kubenow-us-east-1 ..."
-aws s3 cp "$kubenow_image_name".qcow2 s3://kubenow-us-east-1 --region us-east-1 --acl public-read --quiet
-aws s3 cp "$kubenow_image_name".qcow2.md5 s3://kubenow-us-east-1 --region us-east-1 --acl public-read --quiet
+bucket1_region=$(echo "$AWS_BUCKET1_URL" | awk -F "/" '{{ print $2 $3 $4 }}' | sed -e 's/kubenow-//')
+aws s3 cp "$kubenow_image_name".qcow2 "$AWS_BUCKET1_URL" --region "$bucket1_region" --acl public-read --quiet
+aws s3 cp "$kubenow_image_name".qcow2.md5 "$AWS_BUCKET1_URL" --region "$bucket1_region" --acl public-read --quiet
 
 # Copy file to bucket in other aws region
-echo "Copying new image format into AWS S3 bucket: kubenow-us-central-1 ..."
-aws s3 cp "$kubenow_image_name".qcow2 s3://kubenow-eu-central-1/ --region us-east-1 --region eu-central-1 --acl public-read --quiet
-aws s3 cp "$kubenow_image_name".qcow2.md5 s3://kubenow-eu-central-1/ --region us-east-1 --region eu-central-1 --acl public-read --quiet
+echo "Copying new image format into AWS S3 bucket: kubenow-eu-central-1 ..."
+bucket2_region=$(echo "$AWS_BUCKET2_URL" | awk -F "/" '{{ print $2 $3 $4 }}' | sed -e 's/kubenow-//')
+aws s3 cp "$kubenow_image_name".qcow2 "$AWS_BUCKET2_URL" --region "$bucket1_region" --region "$bucket2_region" --acl public-read --quiet
+aws s3 cp "$kubenow_image_name".qcow2.md5 "$AWS_BUCKET2_URL" --region "$bucket1_region" --region "$bucket2_region" --acl public-read --quiet
