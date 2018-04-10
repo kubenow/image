@@ -16,7 +16,7 @@
          "tenant_id": "{{user `arm_tenant_id`}}",
 
          "location": "West Europe",
-         "vm_size": "Standard_A1",
+         "vm_size": "Standard_D2_v2",
 
          "capture_container_name": "{{user `image_name`}}",
          "capture_name_prefix": "kubenow",
