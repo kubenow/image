@@ -9,8 +9,8 @@ sudo pip install --upgrade python-glanceclient
 echo -e "OPENSTACK\n---------"
 echo -e "Check if $IMAGE_NAME already exists:\n"
 
-# Extracting id of the last successful built artificat. Useful later when we need to
-# evaluate if there are any duplicates. If so, then all namesake ones with a different id will be annihilated
+# Extracting id of the last successful built artifact.
+# Useful later when we need to evaluate if there are any duplicates.
 artifact_id=$(grep "An image was created:" </tmp/pckr_build_log.txt | awk '{print $NF}')
 echo -e "ID of the latest successfull built artifact is: $artifact_id\n"
 
