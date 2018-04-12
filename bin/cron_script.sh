@@ -20,8 +20,11 @@ if [ "$HOST_CLOUD" = 'aws' ]; then
   # Installing aws-cli
   pip install awscli --upgrade
 
+  # Getting aws owner-id. Useful in order to avoid receiving public or private results
+  # Also, easier to perform migration to new aws accounts
+  aws_owner_id=$(aws sts get-caller-identity --output text --query 'Account')
   # Extracting ami ID of latest kubenow stable (usually in the format of "ImageId:" "ami-xxxxxxx",)
-  kubenow_latest_amiId=$(aws ec2 describe-images --filters "Name=name,Values=kubenow-$CURRENT_VERSION" "Name=owner-id,Values=105135433346" |
+  kubenow_latest_amiId=$(aws ec2 describe-images --filters "Name=name,Values=kubenow-$CURRENT_VERSION" "Name=owner-id,Values=$aws_owner_id" |
     grep "ImageId" |
     awk '{ print $2 }' |
     sed -e 's/^"//' -e 's/",$//')
@@ -52,6 +55,7 @@ elif [ "$HOST_CLOUD" = 'azure' ]; then
 
   # Finally, inserting image_url attribute in build-azure.json
   sed -i -e '/os_type/a \         "image_url": "'"$kn_vhd_url"'", ' build-azure.json
+  echo -e "Kubenow latest stable VHD url is: $kn_vhd_url .\n"
 elif [ "$HOST_CLOUD" = 'gce' ]; then
   echo -e "Running GCE Packer builder...\n"
   export GCE_SOURCE_IMAGE_NAME="kubenow-$CURRENT_VERSION"
@@ -62,6 +66,6 @@ else
   echo -e "HOST_CLOUD is NOT set to one of the following values: aws, azure, gce, openstack .\n"
 fi
 
-# Last but not least, replacing the script attribute in the provisioner section to a different value than default one (i.e. requirements.sh)
-# Given that we are starting from a stable kubenow image, we do not want to reinstall the requirements, rather to perform security updates
+# Finally, overwriting provisioner's default script attribute (i.e. requirements.sh)
+# Reason: using a stable image, no need to reinstall all requirements, only security updates
 sed -i -e 's|requirements.sh|bin/get_security_updates.sh|g' build-"$HOST_CLOUD".json
