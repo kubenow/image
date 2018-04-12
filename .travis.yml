@@ -151,6 +151,8 @@ after_success:
 notifications:
   email: false
   slack:
+    on_success: change # default: always
+    on_failure: always # default: always
     secure: >
       UM/gwTYpOG+tT1dBsJei/WVHxt7pf0HH3TAMXsslZJpI4mAP1QsJNtaP81is1xk
       Q0UaVr8qCFrJ1eUfr5Zjkd5ro1wpkX9dz5VSx/HHXoQZLZusGJ80o404XxT6Nuz
