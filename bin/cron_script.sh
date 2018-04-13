@@ -54,7 +54,7 @@ elif [ "$HOST_CLOUD" = 'azure' ]; then
   kn_vhd_url="https://kubenow.blob.core.windows.net/system/$vhd_name"
 
   # Finally, inserting image_url attribute in build-azure.json
-  sed -e "/os_type/a \         \"image_url\": \"$kn_vhd_url\", " build-azure.json
+  sed -i -e "/os_type/a \         \"image_url\": \"$kn_vhd_url\", " build-azure.json
   echo -e "Kubenow latest stable VHD url is: $kn_vhd_url .\n"
 elif [ "$HOST_CLOUD" = 'gce' ]; then
   echo -e "Running GCE Packer builder...\n"
