@@ -10,6 +10,7 @@ env:
   global:
     - TERRAFORM_VERSION=0.9.4
     - PACKER_VERSION=1.1.2
+    - PIP=9.0.3
     # Workaround to build on google - See https://github.com/travis-ci/travis-ci/issues/7940
     - BOTO_CONFIG=/dev/null
     - ANSIBLE_LINT_VERSION=3.4.15
@@ -44,7 +45,7 @@ before_install:
       https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
       > /tmp/terraform.zip
   - unzip /tmp/terraform.zip -d /tmp/
-  - sudo pip install --upgrade -qq pip
+  - sudo pip install -qq --upgrade pip=="${PIP}"
   - sudo pip install -qq yamllint=="${YAMLLINT_VERSION}"
   - sudo apt-get -qq install shellcheck -y
 
@@ -125,6 +126,9 @@ before_script:
   - gcloud auth login 12202776487-compute@developer.gserviceaccount.com --project phenomenal-1145 -q
 
 script:
+  # Necessary in order to extract packer's exit status when piped to tee, above all when failing.
+  # Otherwise the exit code will always be true because of tee and the after_success block get executed incorrectly
+  - set -o pipefail
   # Finally bulding the image with packer
   - travis_retry /tmp/packer build -force build-"$HOST_CLOUD".json | tee /tmp/pckr_build_log.txt
 
@@ -132,6 +136,7 @@ after_success:
   # Azure and Openstack packer builder do not automatically remove namesake artifacts from previous builds.
   # They allows two image with same names, but different unique IDs, even with packer flag --force
   # Thus after creation of either a new or an updated kubenow image, we will remove previous old ones
+  - echo "Running the after_succes block..."
   - >
     if [ "$HOST_CLOUD" = 'azure' ]; then
         bin/clean_az_dupl.sh

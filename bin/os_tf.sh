@@ -15,13 +15,13 @@ sudo sed -i /etc/hosts -e "s/^127.0.0.1 localhost$/127.0.0.1 localhost $(hostnam
 # Install Tools
 # NOTE: Reason why here I am installing glance via apt instead of pip it's because I am running a different version of Ubuntu compared to the Travis' one
 sudo apt-get -qq update
-sudo apt-get -qq install python-glanceclient awscli qemu-utils -y
+sudo apt-get -qq install python-openstackclient awscli qemu-utils -y
 
 # Donwloading newly created KubeNow from OS
 echo "Downloading KubeNow image from Openstack..."
 echo "Sourcing Openstack environment"
 source /tmp/aws_and_os.sh
-glance image-download --file "$kubenow_image_name" "$kubenow_image_id"
+openstack image save --file "$kubenow_image_name" "$kubenow_image_id"
 
 # Converting image from raw to qcow format.
 echo "Converting RAW image into QCOW2 format..."
