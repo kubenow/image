@@ -7,9 +7,8 @@ variable user_domain_id {}
 variable domain_id {}
 variable region_name {}
 variable project_id {}
-variable tenant_id {}
-variable tenant_name {}
-variable auth_version {}
+variable project_name {}
+variable api_version {}
 variable current_version {}
 variable kubenow_image_name {}
 variable kubenow_image_id {}

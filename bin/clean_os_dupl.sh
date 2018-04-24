@@ -4,7 +4,7 @@
 set -e
 
 # Installing necessary tool for the script: python-glanceclient
-sudo pip install --upgrade python-glanceclient
+sudo pip install python-openstackclient==3.11.0
 
 echo -e "OPENSTACK\n---------"
 echo -e "Check if $IMAGE_NAME already exists:\n"
@@ -25,9 +25,9 @@ else
 fi
 
 # Extracting KubeNow images that are flagged as $IMAGE_NAME if any
-# Using tee (which almost always return 0) because of set -e at the beginning and possible grep's exit code -1 here.
+# Using tee (which almost always return 0) because of set -e at the beginning
 echo -e "Listing any potential duplicates for $IMAGE_NAME...\n"
-glance image-list | grep -E "$reg_expr" | awk '{print $2, $4}' | tee /tmp/os_out_images.txt
+openstack image list | grep "$reg_expr" | awk '{print $2, $4}' | tee /tmp/os_out_images.txt
 
 tot_no_images=$(wc -l </tmp/os_out_images.txt)
 counter_del_img=0
@@ -45,7 +45,7 @@ if [ "$tot_no_images" -gt "0" ]; then
     if [ "$id_to_delete" != "$artifact_id" ]; then
       # Deleting old KubeNow Image
       echo -e "Starting to delete duplicate KubeNow image...\nName: $name \nID:$id_to_delete\n"
-      glance image-delete "$id_to_delete"
+      openstack image delete "$id_to_delete"
       counter_del_img=$((counter_del_img + 1))
       echo -e "Keep looking for any other duplicate image...\n\n"
     fi

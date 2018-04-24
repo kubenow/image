@@ -27,7 +27,7 @@ sudo add-apt-repository -y ppa:gluster/glusterfs-3.12
 echo "Updating Ubuntu..."
 sudo apt-get -qq update -y
 sudo DEBIAN_FRONTEND=noninteractive \
-  apt-get -y \
+  apt-get -y -qq \
   -o Dpkg::Options::="--force-confdef" \
   -o Dpkg::Options::="--force-confold" \
   upgrade
