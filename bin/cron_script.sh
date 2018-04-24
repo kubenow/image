@@ -51,10 +51,18 @@ elif [ "$HOST_CLOUD" = 'azure' ]; then
 
   # Searching and composing URL of to a custom VHD to use, i.e. the latest kubenow stable image
   vhd_name=$(az storage blob list --account-name "$AZURE_STORAGE_ACCOUNT" --container-name "$AZURE_CONTAINER_NAME" --query [].name --output tsv | grep "kubenow-$CURRENT_VERSION[^-abcr]" | grep '.vhd')
+  echo -e "vhd_name is: $vhd_name"
+
+  # Check whether or not id string is empty
+  if [ -z "$vhd_name" ]; then
+    echo -e "No Azure images named kubenow-$CURRENT_VERSION have been found.\nInterrupting building.\n"
+    exit 1
+  fi
+  # Composing URL to be injected into build-azure.json
   kn_vhd_url="https://kubenow.blob.core.windows.net/system/$vhd_name"
 
   # Finally, inserting image_url attribute in build-azure.json
-  sed -e "/os_type/a \         \"image_url\": \"$kn_vhd_url\", " build-azure.json
+  sed -i -e "/os_type/a \         \"image_url\": \"$kn_vhd_url\", " build-azure.json
   echo -e "Kubenow latest stable VHD url is: $kn_vhd_url .\n"
 elif [ "$HOST_CLOUD" = 'gce' ]; then
   echo -e "Running GCE Packer builder...\n"

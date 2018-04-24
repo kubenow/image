@@ -29,6 +29,7 @@ else
 fi
 
 # Extracting KubeNow images that are flagged as $IMAGE_NAME if any
+# Using tee (which almost always return 0) because of set -e at the beginning
 echo -e "Listing any potential duplicates for $IMAGE_NAME...\n"
 az storage blob list --account-name "$AZURE_STORAGE_ACCOUNT" --container-name "$AZURE_CONTAINER_NAME" --query [].name --output tsv | grep "$reg_expr" | grep '.vhd' | tee /tmp/az_out_images.txt
 
