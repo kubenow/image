@@ -154,7 +154,7 @@ after_success:
     fi
 
 notifications:
-  email: false
+  email: true
   slack:
     on_success: change # default: always
     on_failure: always # default: always
