@@ -1,11 +1,10 @@
 {
    "variables":{
-      "image_name":"{{env `IMAGE_NAME`}}",
-      "source_image_id":"{{env `AWS_SOURCE_IMAGE_ID`}}",
       "aws_access_key_id":"{{env `AWS_ACCESS_KEY_ID`}}",
       "aws_secret_access_key":"{{env `AWS_SECRET_ACCESS_KEY`}}",
-      "region":"{{env `AWS_DEFAULT_REGION`}}",
-      "current_version":"{{env `CURRENT_VERSION`}}"
+      "aws_filter_name":"{{env `AWS_FILTER_NAME`}}",
+      "current_version":"{{env `CURRENT_VERSION`}}",
+      "image_name":"{{env `IMAGE_NAME`}}"
    },
    "builders":[
       {
@@ -18,8 +17,16 @@
          "instance_type":"t2.medium",
          "region":"ca-central-1",
          "secret_key":"{{user `aws_secret_access_key`}}",
-         "source_ami":"ami-b3d965d7",
-         "ssh_username":"ubuntu"
+         "ssh_username":"ubuntu",  
+         "source_ami_filter": {
+            "filters": {
+                "virtualization-type": "hvm",
+                "name":"{{user `aws_filter_name`}}",
+                "root-device-type": "ebs"   
+            },
+            "owners": ["099720109477"],
+            "most_recent": true
+         }
       },
       {
          "name":"aws-eu-central-1",
@@ -31,8 +38,17 @@
          "instance_type":"t2.medium",
          "region":"eu-central-1",
          "secret_key":"{{user `aws_secret_access_key`}}",
-         "source_ami":"ami-060cde69",
-         "ssh_username":"ubuntu"
+         "ssh_username":"ubuntu",
+         "source_ami_filter": {
+            "filters": {
+                "virtualization-type": "hvm",
+                "name":"{{user `aws_filter_name`}}",
+                "root-device-type": "ebs"
+            },
+            "owners": ["099720109477"],
+            "most_recent": true
+         }
+          
       },
       {
          "name":"aws-eu-west-1",
@@ -44,8 +60,16 @@
          "instance_type":"t2.medium",
          "region":"eu-west-1",
          "secret_key":"{{user `aws_secret_access_key`}}",
-         "source_ami":"ami-ca80a0b9",
-         "ssh_username":"ubuntu"
+         "ssh_username":"ubuntu",
+         "source_ami_filter": {
+            "filters": {
+                "virtualization-type": "hvm",
+                "name":"{{user `aws_filter_name`}}",
+                "root-device-type": "ebs"
+            },
+            "owners": ["099720109477"],
+            "most_recent": true
+         }
       },
       {
          "name":"aws-eu-west-2",
@@ -57,8 +81,16 @@
          "instance_type":"t2.medium",
          "region":"eu-west-2",
          "secret_key":"{{user `aws_secret_access_key`}}",
-         "source_ami":"ami-f1d7c395",
-         "ssh_username":"ubuntu"
+         "ssh_username":"ubuntu",
+         "source_ami_filter": {
+            "filters": {
+                "virtualization-type": "hvm",
+                "name":"{{user `aws_filter_name`}}",
+                "root-device-type": "ebs"
+            },
+            "owners": ["099720109477"],
+            "most_recent": true
+         }
       },
       {
          "name":"aws-us-east-1",
@@ -70,8 +102,16 @@
          "instance_type":"m3.medium",
          "region":"us-east-1",
          "secret_key":"{{user `aws_secret_access_key`}}",
-         "source_ami":"ami-80861296",
-         "ssh_username":"ubuntu"
+         "ssh_username":"ubuntu",
+         "source_ami_filter": {
+            "filters": {
+                "virtualization-type": "hvm",
+                "name":"{{user `aws_filter_name`}}",
+                "root-device-type": "ebs"
+            },
+            "owners": ["099720109477"],
+            "most_recent": true
+         }
       },
       {
          "name":"aws-us-east-2",
@@ -83,8 +123,16 @@
          "instance_type":"t2.medium",
          "region":"us-east-2",
          "secret_key":"{{user `aws_secret_access_key`}}",
-         "source_ami":"ami-618fab04",
-         "ssh_username":"ubuntu"
+         "ssh_username":"ubuntu",
+         "source_ami_filter": {
+            "filters": {
+                "virtualization-type": "hvm",
+                "name":"{{user `aws_filter_name`}}",
+                "root-device-type": "ebs"
+            },
+            "owners": ["099720109477"],
+            "most_recent": true
+         }
       },
       {
          "name":"aws-us-west-1",
@@ -96,8 +144,16 @@
          "instance_type":"t2.medium",
          "region":"us-west-1",
          "secret_key":"{{user `aws_secret_access_key`}}",
-         "source_ami":"ami-2afbde4a",
-         "ssh_username":"ubuntu"
+         "ssh_username":"ubuntu",
+         "source_ami_filter": {
+            "filters": {
+                "virtualization-type": "hvm",
+                "name":"{{user `aws_filter_name`}}",
+                "root-device-type": "ebs"
+            },
+            "owners": ["099720109477"],
+            "most_recent": true
+         }
       },
       {
          "name":"aws-us-west-2",
@@ -109,8 +165,16 @@
          "instance_type":"t2.medium",
          "region":"us-west-2",
          "secret_key":"{{user `aws_secret_access_key`}}",
-         "source_ami":"ami-efd0428f",
-         "ssh_username":"ubuntu"
+         "ssh_username":"ubuntu",
+         "source_ami_filter": {
+            "filters": {
+                "virtualization-type": "hvm",
+                "name":"{{user `aws_filter_name`}}",
+                "root-device-type": "ebs"
+            },
+            "owners": ["099720109477"],
+            "most_recent": true
+         }
       }
    ],
    "provisioners":[
