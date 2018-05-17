@@ -17,28 +17,12 @@ export CURRENT_VERSION
 if [ "$HOST_CLOUD" = 'aws' ]; then
   echo -e "Running AWS Packer builder...\n"
 
-  # Installing aws-cli
-  pip install awscli --upgrade
-
-  # Getting aws owner-id. Useful in order to avoid receiving public or private results
-  # Also, easier to perform migration to new aws accounts
-  aws_owner_id=$(aws sts get-caller-identity --output text --query 'Account')
-  # Extracting ami ID of latest kubenow stable (usually in the format of "ImageId:" "ami-xxxxxxx",)
-  kubenow_latest_amiId=$(aws ec2 describe-images --filters "Name=name,Values=kubenow-$CURRENT_VERSION" "Name=owner-id,Values=$aws_owner_id" |
-    grep "ImageId" |
-    awk '{ print $2 }' |
-    sed -e 's/^"//' -e 's/",$//')
-
-  # Check whether or not id string is empty
-  if [ -n "$kubenow_latest_amiId" ]; then
-    # Updating source image id that will be used for AWS packer builder
-    echo -e "Kubenow latest stable ami ID is: $kubenow_latest_amiId .\n"
-    export AWS_SOURCE_IMAGE_ID="$kubenow_latest_amiId"
-    echo -e "AWS Source Image ID is: $AWS_SOURCE_IMAGE_ID\n"
-  else
-    echo -e "No AWS images named kubenow-$CURRENT_VERSION have been found.\nInterrupting building.\n"
-    exit 1
-  fi
+  # Updating the filters.name within the aws builder file
+  export AWS_FILTER_NAME="kubenow-$CURRENT_VERSION"
+  echo -e "AWS filters.name is: $AWS_FILTER_NAME\n"
+  # Removing owners ID as the default one is used for picking Ubuntu base image from which KubeNow is created.
+  # Such default ID is needed for avoiding the "OptInRequired" from API calls when dealing with public images.
+  sed -i '/owners/d' build-"$HOST_CLOUD".json
 elif [ "$HOST_CLOUD" = 'azure' ]; then
   echo -e "Running Azure Packer builder...\n"
 
