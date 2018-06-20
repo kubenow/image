@@ -51,7 +51,7 @@ sudo apt-get -qq install -y \
   jq
 
 # Helm
-HELM_TGZ=helm-v2.6.1-linux-amd64.tar.gz
+HELM_TGZ=helm-v2.9.1-linux-amd64.tar.gz
 wget -P /tmp/ https://kubernetes-helm.storage.googleapis.com/$HELM_TGZ
 tar -xf /tmp/$HELM_TGZ -C /tmp/
 sudo mv /tmp/linux-amd64/helm /usr/local/bin/
