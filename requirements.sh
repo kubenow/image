@@ -16,10 +16,9 @@ sudo sh -c 'curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key
 sudo sh -c 'echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list'
 
 echo "Add Docker repo..."
-sudo apt-key adv \
-  --keyserver hkp://p80.pool.sks-keyservers.net:80 \
-  --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
-sudo sh -c 'echo "deb https://apt.dockerproject.org/repo ubuntu-xenial main" > /etc/apt/sources.list.d/docker.list'
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+
 
 echo "Add GlusterFS repo..."
 sudo add-apt-repository -y ppa:gluster/glusterfs-3.12
@@ -34,11 +33,12 @@ sudo DEBIAN_FRONTEND=noninteractive \
 
 echo "Installing Kubernetes requirements..."
 sudo apt-get -qq install -y \
-  docker-engine=1.13.1-0~ubuntu-xenial \
+  docker-ce=18.03.1~ce-0~ubuntu \
   kubernetes-cni=0.6.0-00 \
   kubeadm=1.9.2-00 \
   kubelet=1.9.2-00 \
-  kubectl=1.9.2-00
+  kubectl=1.9.2-00 \
+  
 
 echo "Installing other requirements..."
 # APT requirements
