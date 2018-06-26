@@ -33,7 +33,7 @@ sudo DEBIAN_FRONTEND=noninteractive \
 
 echo "Installing Kubernetes requirements..."
 sudo apt-get -qq install -y \
-  docker-ce \
+  docker-ce=18.03.1~ce-0~ubuntu \
   kubernetes-cni=0.6.0-00 \
   kubeadm=1.9.2-00 \
   kubelet=1.9.2-00 \
