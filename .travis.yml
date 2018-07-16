@@ -16,10 +16,10 @@ env:
     - ANSIBLE_LINT_VERSION=3.4.15
     - YAMLLINT_VERSION=1.8.1
   matrix:
-    # - HOST_CLOUD=gce
+    - HOST_CLOUD=gce
     - HOST_CLOUD=aws
-    # - HOST_CLOUD=openstack
-    # - HOST_CLOUD=azure
+    - HOST_CLOUD=openstack
+    - HOST_CLOUD=azure
 
 before_install:
   # Decrypt secrets
@@ -154,8 +154,8 @@ after_success:
     if [ "$HOST_CLOUD" = 'openstack' ]; then
         travis_retry bin/os_pp.sh
     elif [ "$HOST_CLOUD" = 'aws' ]; then
-        # bin/aws_pp.sh
-        echo "Here I will run the script aws_pp.sh to copy new AMI into other regions"
+        # Script that will copy created AMI from default region into the other used ones
+        bin/aws_pp.sh
     fi
 
 notifications:
