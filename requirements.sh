@@ -38,7 +38,7 @@ sudo apt-get -qq install -y \
   kubeadm=1.10.7-00 \
   kubelet=1.10.7-00 \
   kubectl=1.10.7-00 \
-  
+
 
 echo "Installing other requirements..."
 # APT requirements
@@ -51,7 +51,7 @@ sudo apt-get -qq install -y \
   jq
 
 # Helm
-HELM_TGZ=helm-v2.9.1-linux-amd64.tar.gz
+HELM_TGZ=helm-v2.10.0-linux-amd64.tar.gz
 wget -P /tmp/ https://kubernetes-helm.storage.googleapis.com/$HELM_TGZ
 tar -xf /tmp/$HELM_TGZ -C /tmp/
 sudo mv /tmp/linux-amd64/helm /usr/local/bin/
@@ -68,9 +68,9 @@ echo "Pulling required Docker images..."
 # Essential Kubernetes containers are listed in following files:
 # https://github.com/kubernetes/kubernetes/blob/master/cmd/kubeadm/app/constants/constants.go (etcd-version)
 # https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/dns/kubedns-controller.yaml.base (kube-dns-version)
-kube_version="v1.10.7"
+kube_version="v1.10.9"
 kube_dns_version="1.14.10"
-etcd_version="3.1.12"
+etcd_version="3.2.12"
 flannel_version="v0.10.0"
 sudo docker pull gcr.io/google_containers/kube-apiserver-amd64:$kube_version
 sudo docker pull gcr.io/google_containers/kube-proxy-amd64:$kube_version
