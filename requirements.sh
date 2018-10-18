@@ -70,7 +70,7 @@ echo "Pulling required Docker images..."
 # https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/dns/kubedns-controller.yaml.base (kube-dns-version)
 kube_version="v1.10.9"
 kube_dns_version="1.14.10"
-etcd_version="3.2.12"
+etcd_version="3.1.12"
 flannel_version="v0.10.0"
 sudo docker pull gcr.io/google_containers/kube-apiserver-amd64:$kube_version
 sudo docker pull gcr.io/google_containers/kube-proxy-amd64:$kube_version
