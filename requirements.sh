@@ -35,9 +35,9 @@ echo "Installing Kubernetes requirements..."
 sudo apt-get -qq install -y \
   docker-ce=18.03.1~ce-0~ubuntu \
   kubernetes-cni=0.6.0-00 \
-  kubeadm=1.10.7-00 \
-  kubelet=1.10.7-00 \
-  kubectl=1.10.7-00 \
+  kubeadm=1.10.9-00 \
+  kubelet=1.10.9-00 \
+  kubectl=1.10.9-00 \
 
 
 echo "Installing other requirements..."
