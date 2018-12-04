@@ -1,28 +1,23 @@
 # Openstack credentials and instance settings, SSH Variables and current image version
-variable username {}
 
-variable password {}
 variable auth_url {}
-variable user_domain_id {}
-variable domain_id {}
+variable username {}
+variable password {}
+variable domain_name {}
+variable tenant_name {}
 variable region_name {}
-variable project_id {}
-variable project_name {}
 variable api_version {}
 variable current_version {}
 variable kubenow_image_name {}
 variable kubenow_image_id {}
 variable os_image_id {}
 variable network_id {}
-
-variable assign_floating_ip {
-  default = false
-}
-
 variable os_pool_name {}
 
 # SSH Settings
 variable ssh_key_pub {}
+
+variable ssh_key_prv {}
 
 variable ssh_user {
   default = "ubuntu"
@@ -39,6 +34,11 @@ resource "openstack_networking_floatingip_v2" "fip_1" {
   pool = "${var.os_pool_name}"
 }
 
+resource "openstack_compute_floatingip_associate_v2" "fip_1" {
+  floating_ip = "${openstack_networking_floatingip_v2.fip_1.address}"
+  instance_id = "${openstack_compute_instance_v2.kubenow-image-export.id}"
+}
+
 # No terraform provider as we are using environmental variables
 # Directly defining the instance resource details.
 resource "openstack_compute_instance_v2" "kubenow-image-export" {
@@ -47,33 +47,36 @@ resource "openstack_compute_instance_v2" "kubenow-image-export" {
   flavor_name     = "8C-8GB-50GB"
   key_pair        = "${openstack_compute_keypair_v2.main.name}"
   security_groups = ["default"]
-  floating_ip     = "${openstack_networking_floatingip_v2.fip_1.address}"
 
   network {
     uuid = "${var.network_id}"
+  }
+}
+
+# Provisioners: copying files so to be executed remotely on the VM instance
+resource null_resource "upload-and-execute-file" {
+  triggers {
+    instance_id = "${openstack_compute_instance_v2.kubenow-image-export.id}"
+  }
+
+  connection {
+    type        = "ssh"
+    host        = "${openstack_networking_floatingip_v2.fip_1.address}"
+    user        = "${var.ssh_user}"
+    private_key = "${file(var.ssh_key_prv)}"
+    agent       = "false"
+    timeout     = "3m"
   }
 
   # Provisioners: copying files so to be executed remotely on the VM instance
   provisioner "file" {
     source      = "/tmp/aws_and_os.sh"
     destination = "/tmp/aws_and_os.sh"
-
-    connection {
-      type  = "ssh"
-      user  = "${var.ssh_user}"
-      agent = "true"
-    }
   }
 
   provisioner "file" {
     source      = "os_tf.sh"
     destination = "/tmp/os_tf.sh"
-
-    connection {
-      type  = "ssh"
-      user  = "${var.ssh_user}"
-      agent = "true"
-    }
   }
 
   provisioner "remote-exec" {
@@ -81,11 +84,5 @@ resource "openstack_compute_instance_v2" "kubenow-image-export" {
       "chmod +x /tmp/os_tf.sh",
       "/tmp/os_tf.sh ${var.kubenow_image_name} ${var.kubenow_image_id}",
     ]
-
-    connection {
-      type  = "ssh"
-      user  = "${var.ssh_user}"
-      agent = "true"
-    }
   }
 }
