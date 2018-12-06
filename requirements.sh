@@ -1,5 +1,7 @@
 #!/bin/bash
 
+kube_version="v1.13.0"
+
 # Exit immediately if a command exits with a non-zero status
 set -e
 
@@ -33,11 +35,11 @@ sudo DEBIAN_FRONTEND=noninteractive \
 
 echo "Installing Kubernetes requirements..."
 sudo apt-get -qq install -y \
-  docker-ce=18.03.1~ce-0~ubuntu \
+  docker-ce=18.06.1~ce~3-0~ubuntu \
   kubernetes-cni=0.6.0-00 \
-  kubeadm=1.10.9-00 \
-  kubelet=1.10.9-00 \
-  kubectl=1.10.9-00 \
+  kubeadm=$kube_version-00 \
+  kubelet=$kube_version-00 \
+  kubectl=$kube_version-00 \
 
 
 echo "Installing other requirements..."
@@ -68,20 +70,19 @@ echo "Pulling required Docker images..."
 # Essential Kubernetes containers are listed in following files:
 # https://github.com/kubernetes/kubernetes/blob/master/cmd/kubeadm/app/constants/constants.go (etcd-version)
 # https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/dns/kubedns-controller.yaml.base (kube-dns-version)
-kube_version="v1.10.9"
-kube_dns_version="1.14.10"
-etcd_version="3.1.12"
-flannel_version="v0.10.0"
-sudo docker pull gcr.io/google_containers/kube-apiserver-amd64:$kube_version
-sudo docker pull gcr.io/google_containers/kube-proxy-amd64:$kube_version
-sudo docker pull gcr.io/google_containers/kube-controller-manager-amd64:$kube_version
-sudo docker pull gcr.io/google_containers/kube-scheduler-amd64:$kube_version
-sudo docker pull gcr.io/google_containers/etcd-amd64:$etcd_version
-sudo docker pull gcr.io/google_containers/pause-amd64:3.0
-sudo docker pull gcr.io/google_containers/k8s-dns-sidecar-amd64:$kube_dns_version
-sudo docker pull gcr.io/google_containers/k8s-dns-kube-dns-amd64:$kube_dns_version
-sudo docker pull gcr.io/google_containers/k8s-dns-dnsmasq-nanny-amd64:$kube_dns_version
-sudo docker pull quay.io/coreos/flannel:$flannel_version-amd64
+
+sudo kubeadm control image pull --kubernetes-version=$kube_version
+# The above command will pull the following images.
+#     k8s.gcr.io/kube-apiserver:v1.13.0
+#     k8s.gcr.io/kube-controller-manager:v1.13.0
+#     k8s.gcr.io/kube-scheduler:v1.13.0
+#     k8s.gcr.io/kube-proxy:v1.13.0
+#     k8s.gcr.io/pause:3.1
+#     k8s.gcr.io/etcd:3.2.24
+#     k8s.gcr.io/coredns:1.2.6
+
+# Pull the flannel image
+sudo docker pull quay.io/coreos/flannel:v0.10.0
 
 # After having installed all the necessary packages, we check whether there are related security-updates
 sudo apt-get -qq update -y && sudo unattended-upgrades -d
