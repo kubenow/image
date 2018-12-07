@@ -1,5 +1,11 @@
 ---
-language: python # need for pip
+language: python
+
+python:
+  - "2.7"
+
+virtualenv:
+  system_site_packages: true
 
 sudo: required
 
@@ -8,7 +14,7 @@ services:
 
 env:
   global:
-    - TERRAFORM_VERSION=0.9.4
+    - TERRAFORM_VERSION=0.11.10
     - PACKER_VERSION=1.1.2
     - PIP=9.0.3
     # Workaround to build on google - See https://github.com/travis-ci/travis-ci/issues/7940
@@ -95,12 +101,13 @@ install:
   - sudo apt-get -qq install google-cloud-sdk -y
 
   # Installing Azure command-line client here as used both in cleaning and cron_job scripts
+  - sudo apt-get -qq install apt-transport-https lsb-release software-properties-common -y
   - AZ_REPO=$(lsb_release -cs)
   - echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | sudo tee /etc/apt/sources.list.d/azure-cli.list
-  - sudo apt-key adv --keyserver packages.microsoft.com --recv-keys 52E16F86FEE04B979B07E28DB02C46DF417A0893
-  - curl -L https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
-  - sudo apt-get -qq install apt-transport-https -y
-  - sudo apt-get -qq update && sudo apt-get -qq install azure-cli -y
+  - >
+    sudo apt-key --keyring /etc/apt/trusted.gpg.d/Microsoft.gpg adv \
+      --keyserver packages.microsoft.com --recv-keys BC528686B50D79E339D3721CEB3E94ADBE1229CF
+  - sudo apt-get update && sudo apt-get install azure-cli
 
 before_script:
   # Check whether this build was triggered by our cron job for security-updates
