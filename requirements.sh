@@ -71,7 +71,7 @@ echo "Pulling required Docker images..."
 # https://github.com/kubernetes/kubernetes/blob/master/cmd/kubeadm/app/constants/constants.go (etcd-version)
 # https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/dns/kubedns-controller.yaml.base (kube-dns-version)
 
-sudo kubeadm control image pull --kubernetes-version=v$kube_version
+sudo kubeadm config images pull --kubernetes-version=v$kube_version
 # The above command will pull the following images.
 #     k8s.gcr.io/kube-apiserver:v1.13.0
 #     k8s.gcr.io/kube-controller-manager:v1.13.0
